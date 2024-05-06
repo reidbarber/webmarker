@@ -134,7 +134,7 @@ function applyStyle(
   Object.assign(element.style, style);
 }
 
-function unMark(): void {
+function unmark(): void {
   document
     .querySelectorAll(".webmark, .webmarkmask")
     .forEach((el) => el.remove());
@@ -145,5 +145,5 @@ function isMarked(): boolean {
   return document.documentElement.hasAttribute("data-webmarked");
 }
 
-export { mark, unMark, isMarked };
+export { mark, unmark, isMarked };
 export type { WebMarkOptions, MarkedElement };

@@ -1,4 +1,4 @@
-import { mark, unMark, isMarked, WebMarkOptions } from "../src/index";
+import { mark, unmark, isMarked, WebMarkOptions } from "../src/index";
 import { describe, expect, test, beforeEach, afterEach } from "@jest/globals";
 
 describe("WebMark", () => {
@@ -12,7 +12,7 @@ describe("WebMark", () => {
   });
 
   afterEach(() => {
-    unMark();
+    unmark();
   });
 
   test("marks all interactive elements", () => {
@@ -33,9 +33,9 @@ describe("WebMark", () => {
     expect(elements.get("Label 3")?.element.tagName).toBe("A");
   });
 
-  test("removes marks with unMark()", () => {
+  test("removes marks with unmark()", () => {
     mark();
-    unMark();
+    unmark();
     expect(document.querySelector(".webmark")).toBeNull();
     expect(document.querySelector(".webmarkmask")).toBeNull();
     expect(isMarked()).toBe(false);

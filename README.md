@@ -11,6 +11,8 @@ The `mark()` function will add markings for all interactive elements on a web pa
 ## Usage
 
 ```javascript
+import { mark, unmark } from "webmarker";
+
 // Mark interactive elements on the document
 let elements = mark();
 
@@ -18,7 +20,7 @@ let elements = mark();
 console.log(elements.get("0").element);
 
 // Remove markings
-unMark();
+unmark();
 ```
 
 ### Advanced
@@ -42,7 +44,7 @@ let elements = mark({
 });
 
 // Cleanup
-unMark();
+unmark();
 ```
 
 ## Playwright Use Case

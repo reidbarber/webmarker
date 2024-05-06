@@ -1,4 +1,4 @@
-import { cleanup, mark } from "../src";
+import { unmark, mark } from "../src";
 import { useEffect, useState } from "react";
 
 export function App() {
@@ -15,7 +15,7 @@ export function App() {
 
   let toggleMark = () => {
     if (isMarked) {
-      cleanup();
+      unmark();
       setMarked(false);
     } else {
       mark({});
