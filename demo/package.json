@@ -1,8 +1,9 @@
 {
-  "name": "demo",
+  "name": "webmarker-demo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "source": "index.html",
   "scripts": {
     "start": "parcel",
     "build": "parcel build"
