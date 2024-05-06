@@ -1,10 +1,10 @@
-# WebMark
+# WebMarker
 
-WebMark is a library for marking web pages for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting.
+WebMarker is a library for marking web pages for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting.
 
 ## Overview
 
-WebMark adds visual markings with labels to elements on a web page. This can be used to improve visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
+WebMarker adds visual markings with labels to elements on a web page. This can be used to improve visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
 
 The `mark()` function will add markings for all interactive elements on a web page, and return a [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map) of the elements. The returned Map's keys are the mark labels, and the values are an object with the element (`element`) and marking element (`markElement`).
 
@@ -51,7 +51,7 @@ unmark();
 
 ```javascript
 import { chromium, devices } from "playwright";
-import { mark } from "webmark";
+import { mark } from "webmarker";
 
 (async () => {
   const browser = await chromium.launch();

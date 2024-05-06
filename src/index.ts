@@ -1,4 +1,4 @@
-interface WebMarkOptions {
+interface MarkOptions {
   /**
    * A CSS selector to specify the elements to be marked.
    */
@@ -48,7 +48,7 @@ interface MarkedElement {
   maskElement?: HTMLElement;
 }
 
-function mark(options: WebMarkOptions = {}): Map<string, MarkedElement> {
+function mark(options: MarkOptions = {}): Map<string, MarkedElement> {
   const {
     selector = "button, input, a, select, textarea",
     markStyle = {
@@ -81,8 +81,8 @@ function mark(options: WebMarkOptions = {}): Map<string, MarkedElement> {
     const label = labelGenerator(element, index);
     const markElement = document.createElement("div");
     markElement.textContent = label;
-    markElement.className = "webmark";
-    markElement.id = `webmark-${label}`;
+    markElement.className = "webmarker";
+    markElement.id = `webmarker-${label}`;
     markElement.style.position = "absolute";
     document.body.appendChild(markElement);
     applyStyle(
@@ -95,10 +95,10 @@ function mark(options: WebMarkOptions = {}): Map<string, MarkedElement> {
       : undefined;
 
     markedElements.set(label, { element, markElement, maskElement });
-    element.setAttribute("data-webmarkedby", `webmark-${label}`);
+    element.setAttribute("data-webmarkeredby", `webmarker-${label}`);
   });
 
-  document.documentElement.dataset.webmarked = "true";
+  document.documentElement.dataset.webmarkered = "true";
   return markedElements;
 }
 
@@ -110,8 +110,8 @@ function createMask(
   label: string
 ): HTMLElement {
   const mask = document.createElement("div");
-  mask.className = "webmarkmask";
-  mask.id = `webmarkmask-${label}`;
+  mask.className = "webmarkermask";
+  mask.id = `webmarkermask-${label}`;
   document.body.appendChild(mask);
   positionMask(mask, element);
   applyStyle(mask, typeof style === "function" ? style(element) : style);
@@ -136,14 +136,14 @@ function applyStyle(
 
 function unmark(): void {
   document
-    .querySelectorAll(".webmark, .webmarkmask")
+    .querySelectorAll(".webmarker, .webmarkermask")
     .forEach((el) => el.remove());
-  document.documentElement.removeAttribute("data-webmarked");
+  document.documentElement.removeAttribute("data-webmarkered");
 }
 
 function isMarked(): boolean {
-  return document.documentElement.hasAttribute("data-webmarked");
+  return document.documentElement.hasAttribute("data-webmarkered");
 }
 
 export { mark, unmark, isMarked };
-export type { WebMarkOptions, MarkedElement };
+export type { MarkOptions, MarkedElement };

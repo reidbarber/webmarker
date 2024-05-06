@@ -25,7 +25,7 @@ export function App() {
 
   return (
     <main>
-      <h1>WebMark Demo</h1>
+      <h1>WebMarker Demo</h1>
       <button onClick={toggleMark}>{isMarked ? "Unmark" : "Mark"}</button>
       <div>
         <label htmlFor="field-1">Input:</label>

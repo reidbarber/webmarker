@@ -1,7 +1,7 @@
-import { mark, unmark, isMarked, WebMarkOptions } from "../src/index";
+import { mark, unmark, isMarked, MarkOptions } from "../src/index";
 import { describe, expect, test, beforeEach, afterEach } from "@jest/globals";
 
-describe("WebMark", () => {
+describe("WebMarker", () => {
   beforeEach(() => {
     document.body.innerHTML = `
     <button>Button 1</button>
@@ -22,7 +22,7 @@ describe("WebMark", () => {
   });
 
   test("assigns correct labels to elements", () => {
-    const options: WebMarkOptions = {
+    const options: MarkOptions = {
       labelGenerator: (_, index) => `Label ${index}`,
     };
     const elements = mark(options);
@@ -36,8 +36,8 @@ describe("WebMark", () => {
   test("removes marks with unmark()", () => {
     mark();
     unmark();
-    expect(document.querySelector(".webmark")).toBeNull();
-    expect(document.querySelector(".webmarkmask")).toBeNull();
+    expect(document.querySelector(".webmarker")).toBeNull();
+    expect(document.querySelector(".webmarkermask")).toBeNull();
     expect(isMarked()).toBe(false);
   });
 
@@ -51,8 +51,8 @@ describe("WebMark", () => {
       showMasks: true,
     });
 
-    const markElement = document.querySelector(".webmark") as HTMLElement;
-    const maskElement = document.querySelector(".webmarkmask") as HTMLElement;
+    const markElement = document.querySelector(".webmarker") as HTMLElement;
+    const maskElement = document.querySelector(".webmarkermask") as HTMLElement;
 
     expect(markElement.style.backgroundColor).toBe("blue");
     expect(markElement.style.color).toBe("yellow");
