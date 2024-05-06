@@ -49,21 +49,4 @@ unmark();
 
 ## Playwright Use Case
 
-```javascript
-import { chromium, devices } from "playwright";
-import { mark } from "webmarker";
-
-(async () => {
-  const browser = await chromium.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  await page.goto("https://example.com/");
-
-  await page.evaluate((mark) => {
-    let elements = mark();
-  }, mark);
-
-  await context.close();
-  await browser.close();
-})();
-```
+Coming soon
