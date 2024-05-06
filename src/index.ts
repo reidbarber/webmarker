@@ -87,6 +87,7 @@ function mark(options: MarkOptions = {}): Map<string, MarkedElement> {
     document.body.appendChild(markElement);
     applyStyle(
       markElement,
+      { pointerEvents: "none" },
       typeof markStyle === "function" ? markStyle(element) : markStyle
     );
 
@@ -114,7 +115,13 @@ function createMask(
   mask.id = `webmarkermask-${label}`;
   document.body.appendChild(mask);
   positionMask(mask, element);
-  applyStyle(mask, typeof style === "function" ? style(element) : style);
+  applyStyle(
+    mask,
+    {
+      pointerEvents: "none",
+    },
+    typeof style === "function" ? style(element) : style
+  );
   return mask;
 }
 
@@ -129,9 +136,10 @@ function positionMask(mask: HTMLElement, element: Element): void {
 
 function applyStyle(
   element: HTMLElement,
-  style: Partial<CSSStyleDeclaration>
+  defaultStyle: Partial<CSSStyleDeclaration>,
+  customStyle: Partial<CSSStyleDeclaration>
 ): void {
-  Object.assign(element.style, style);
+  Object.assign(element.style, defaultStyle, customStyle);
 }
 
 function unmark(): void {
