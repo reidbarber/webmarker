@@ -1,6 +1,6 @@
 # WebMarker
 
-WebMarker is a library for marking web pages for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting.
+A library for marking web pages for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting.
 
 ## Overview
 
