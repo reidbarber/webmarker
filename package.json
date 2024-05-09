@@ -10,7 +10,10 @@
     "test": "jest",
     "build": "parcel build",
     "demo:start": "parcel demo/index.html",
-    "demo:build": "parcel build demo/.html"
+    "demo:build": "parcel build demo/.html",
+    "docs:dev": "cd docs && next",
+    "docs:build": "cd docs && next build",
+    "docs:start": "cd docs && next start"
   },
   "author": "Reid Barber",
   "license": "MIT",
