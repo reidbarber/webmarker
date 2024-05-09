@@ -7,7 +7,8 @@
   "module": "dist/module.js",
   "types": "dist/types.d.ts",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "parcel build"
   },
   "author": "Reid Barber",
   "license": "MIT",
@@ -15,6 +16,10 @@
     "@babel/core": "^7.24.4",
     "@babel/preset-env": "^7.24.4",
     "@babel/preset-typescript": "^7.24.1",
+    "@parcel/packager-ts": "2.12.0",
+    "@parcel/transformer-typescript-tsc": "^2.12.0",
+    "@parcel/transformer-typescript-types": "2.12.0",
+    "@parcel/validator-typescript": "^2.12.0",
     "babel-jest": "^29.7.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",

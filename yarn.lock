@@ -1637,6 +1637,13 @@
     "@parcel/utils" "2.12.0"
     posthtml "^0.16.4"
 
+"@parcel/packager-ts@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@parcel/packager-ts/-/packager-ts-2.12.0.tgz#7422c07ff3a327fdb592f6d707d31bc146590a17"
+  integrity sha512-8wR0BNN2NBD+IIU0tjioK+lRD4p2Qi/fKxDH5ixEW912tRV+Vd4kE8k++U6YQIpSlK4FRnjFod5zYYhNSLuiXg==
+  dependencies:
+    "@parcel/plugin" "2.12.0"
+
 "@parcel/packager-wasm@2.12.0":
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/@parcel/packager-wasm/-/packager-wasm-2.12.0.tgz#39dbd91e7bf68456dbc9d19a412017e2b513736f"
@@ -1880,6 +1887,34 @@
     posthtml-render "^3.0.0"
     semver "^7.5.2"
 
+"@parcel/transformer-typescript-tsc@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@parcel/transformer-typescript-tsc/-/transformer-typescript-tsc-2.12.0.tgz#96219045f90535c345e305552ed2ecb90a2b3c5b"
+  integrity sha512-2y74ijth5nngFTRXvZGmZXRwmPjzTHTs8LA6PLXiAbR41091C4QdHvNk1Z3iFo29yyECwAUXGubY2mC0sfWbUA==
+  dependencies:
+    "@parcel/plugin" "2.12.0"
+    "@parcel/source-map" "^2.1.1"
+    "@parcel/ts-utils" "2.12.0"
+
+"@parcel/transformer-typescript-types@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@parcel/transformer-typescript-types/-/transformer-typescript-types-2.12.0.tgz#63e3fc4d1c5d61e1d3a2d56ff58454cf58b514ca"
+  integrity sha512-uxF4UBMYvbjiV3zHTWMrZX8cFD92VUvD3ArcGi5WEtuVROUm9Sc47o0mOzxKfMFlJu2KOfZVHYlzK9f/UKA2kQ==
+  dependencies:
+    "@parcel/diagnostic" "2.12.0"
+    "@parcel/plugin" "2.12.0"
+    "@parcel/source-map" "^2.1.1"
+    "@parcel/ts-utils" "2.12.0"
+    "@parcel/utils" "2.12.0"
+    nullthrows "^1.1.1"
+
+"@parcel/ts-utils@2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@parcel/ts-utils/-/ts-utils-2.12.0.tgz#47878a6f3baff77d2fa6f9878fe235c9c5d75da8"
+  integrity sha512-zou+W6dcqnXXUOfN5zGM+ePIWbYOhGp8bVB2jICoNkoKmNAHd4l4zeHl5yQXnbZfynVw88cZVqxtXS8tYebelg==
+  dependencies:
+    nullthrows "^1.1.1"
+
 "@parcel/types@2.12.0":
   version "2.12.0"
   resolved "https://registry.yarnpkg.com/@parcel/types/-/types-2.12.0.tgz#caf0af00ee0c7228b350eca5f4d3a5b85ce457ad"
@@ -1906,6 +1941,17 @@
     "@parcel/source-map" "^2.1.1"
     chalk "^4.1.0"
     nullthrows "^1.1.1"
+
+"@parcel/validator-typescript@^2.12.0":
+  version "2.12.0"
+  resolved "https://registry.yarnpkg.com/@parcel/validator-typescript/-/validator-typescript-2.12.0.tgz#aad284f47bfa01b53790f1d3dea7311b28e786b6"
+  integrity sha512-oiAG/MA6Ycbv106KCAQAwwVKdDdpyvK8xWJ47wme726Nkc6YO/UCoHBqIFTld8+PC7QD3U0XY5Y4kavm3n+lMQ==
+  dependencies:
+    "@parcel/diagnostic" "2.12.0"
+    "@parcel/plugin" "2.12.0"
+    "@parcel/ts-utils" "2.12.0"
+    "@parcel/types" "2.12.0"
+    "@parcel/utils" "2.12.0"
 
 "@parcel/watcher-android-arm64@2.4.1":
   version "2.4.1"

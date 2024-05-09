@@ -1,0 +1,7 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "lib": ["dom", "es2015"]
+  },
+  "include": ["src/**/*"]
+}

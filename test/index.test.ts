@@ -15,17 +15,17 @@ describe("WebMarker", () => {
     unmark();
   });
 
-  test("marks all interactive elements", () => {
-    const elements = mark();
+  test("marks all interactive elements", async () => {
+    const elements = await mark();
     expect(elements.size).toBe(4);
     expect(isMarked()).toBe(true);
   });
 
-  test("assigns correct labels to elements", () => {
+  test("assigns correct labels to elements", async () => {
     const options: MarkOptions = {
       labelGenerator: (_, index) => `Label ${index}`,
     };
-    const elements = mark(options);
+    const elements = await mark(options);
 
     expect(elements.get("Label 0")?.element.tagName).toBe("BUTTON");
     expect(elements.get("Label 1")?.element.tagName).toBe("BUTTON");
@@ -33,19 +33,19 @@ describe("WebMarker", () => {
     expect(elements.get("Label 3")?.element.tagName).toBe("A");
   });
 
-  test("removes marks with unmark()", () => {
-    mark();
+  test("removes marks with unmark()", async () => {
+    await mark();
     unmark();
     expect(document.querySelector(".webmarker")).toBeNull();
     expect(document.querySelector(".webmarkermask")).toBeNull();
     expect(isMarked()).toBe(false);
   });
 
-  test("applies custom styles to marks and masks", () => {
+  test("applies custom styles to marks and masks", async () => {
     const customMarkStyle = { backgroundColor: "blue", color: "yellow" };
     const customMaskStyle = { outline: "3px solid green" };
 
-    mark({
+    await mark({
       markStyle: customMarkStyle,
       maskStyle: customMaskStyle,
       showMasks: true,
