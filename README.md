@@ -14,7 +14,7 @@ The `mark()` function will add markings for all interactive elements on a web pa
 import { mark, unmark } from "webmarker";
 
 // Mark interactive elements on the document
-let elements = mark();
+let elements = await mark();
 
 // Reference an element by label
 console.log(elements.get("0").element);
