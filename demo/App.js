@@ -3,13 +3,13 @@ import { useEffect, useState, useRef } from "react";
 
 export function App() {
   let [isMarked, setMarked] = useState(false);
-  let [elementMap, setElementMap] = useState(null);
+  let [elementMap, setElementMap] = useState(new Map());
   let demoRef = useRef(null);
 
   useEffect(() => {
     if (!isMarked) {
       let elements = mark({});
-      setElementMap(elements);
+      elements.then((res) => setElementMap(res));
       setMarked(true);
     }
   }, []);
@@ -18,13 +18,13 @@ export function App() {
     if (isMarked) {
       unmark();
       setMarked(false);
+      setElementMap(new Map());
     } else {
       let elements = mark({});
-      setElementMap(elements);
+      elements.then((res) => setElementMap(res));
       setMarked(true);
     }
   };
-  console.log(elementMap);
 
   return (
     <main>
@@ -55,11 +55,11 @@ export function App() {
       <div>
         <h2>Marked Elements:</h2>
         <ul>
-          {elementMap &&
-            Object.entries(elementMap).map(([key, value]) => (
-              <li key={key}>
-                <span>{key}</span>
-                <span>{value}</span>
+          {Array.from(elementMap)
+            .map(([key, value]) => ({ key, value }))
+            .map((element) => (
+              <li key={element.key}>
+                {element.key} : {element.value.element.tagName}
               </li>
             ))}
         </ul>
