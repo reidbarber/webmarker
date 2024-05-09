@@ -35,6 +35,8 @@ let elements = mark({
   // A custom CSS style to apply to the mask element.
   // Use a transparent background to have it act as a bounding box.
   maskStyle: { border: "2px dashed blue", backgroundColor: "transparent" },
+  // The placement of the mask relative to the element.
+  maskPlacement: "top-start";
   // Whether or not to show masks over elements.
   // Defaults to true.
   showMasks: true,
