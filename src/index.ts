@@ -84,7 +84,7 @@ async function mark(
       zIndex: "9999",
     },
     maskStyle = {
-      border: "2px dashed red",
+      outline: "2px dashed red",
       backgroundColor: "transparent",
     },
     maskPlacement = "top-start",

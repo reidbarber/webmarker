@@ -43,7 +43,7 @@ describe("WebMarker", () => {
 
   test("applies custom styles to marks and masks", () => {
     const customMarkStyle = { backgroundColor: "blue", color: "yellow" };
-    const customMaskStyle = { border: "3px solid green" };
+    const customMaskStyle = { outline: "3px solid green" };
 
     mark({
       markStyle: customMarkStyle,
@@ -56,6 +56,6 @@ describe("WebMarker", () => {
 
     expect(markElement.style.backgroundColor).toBe("blue");
     expect(markElement.style.color).toBe("yellow");
-    expect(maskElement.style.border).toBe("3px solid green");
+    expect(maskElement.style.outline).toBe("3px solid green");
   });
 });
