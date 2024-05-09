@@ -1,5 +1,19 @@
 import { computePosition } from "@floating-ui/dom";
 
+type Placement =
+  | "top"
+  | "top-start"
+  | "top-end"
+  | "right"
+  | "right-start"
+  | "right-end"
+  | "bottom"
+  | "bottom-start"
+  | "bottom-end"
+  | "left"
+  | "left-start"
+  | "left-end";
+
 interface MarkOptions {
   /**
    * A CSS selector to specify the elements to be marked.
@@ -20,6 +34,12 @@ interface MarkOptions {
   maskStyle?:
     | Partial<CSSStyleDeclaration>
     | ((element: Element) => Partial<CSSStyleDeclaration>);
+  /**
+   * The placement of the mask relative to the element.
+   *
+   * @default 'top-start'
+   */
+  maskPlacement?: Placement;
   /**
    * Whether or not to show bounding boxes around the elements.
    *
@@ -67,6 +87,7 @@ async function mark(
       border: "2px dashed red",
       backgroundColor: "transparent",
     },
+    maskPlacement = "top-start",
     showMasks = true,
     labelGenerator = (_, index) => index.toString(),
     containerElement = document.body,
@@ -104,7 +125,7 @@ async function mark(
       );
 
       const maskElement = showMasks
-        ? createMask(element, maskStyle, label)
+        ? createMask(element, maskStyle, label, maskPlacement)
         : undefined;
 
       markedElements.set(label, { element, markElement, maskElement });
@@ -121,13 +142,14 @@ function createMask(
   style:
     | Partial<CSSStyleDeclaration>
     | ((element: Element) => Partial<CSSStyleDeclaration>),
-  label: string
+  label: string,
+  placement: Placement
 ): HTMLElement {
   const mask = document.createElement("div");
   mask.className = "webmarkermask";
   mask.id = `webmarkermask-${label}`;
   document.body.appendChild(mask);
-  positionMask(mask, element);
+  positionMask(mask, element, placement);
   applyStyle(
     mask,
     {
@@ -140,11 +162,12 @@ function createMask(
 
 async function positionMask(
   mask: HTMLElement,
-  element: Element
+  element: Element,
+  placement: Placement
 ): Promise<void> {
-  const { x, y, width, height } = element.getBoundingClientRect();
+  const { width, height } = element.getBoundingClientRect();
   const { x: maskX, y: maskY } = await computePosition(element, mask, {
-    placement: "top-start",
+    placement,
     strategy: "fixed",
   });
   Object.assign(mask.style, {
@@ -176,4 +199,4 @@ function isMarked(): boolean {
 }
 
 export { mark, unmark, isMarked };
-export type { MarkOptions, MarkedElement };
+export type { MarkOptions, MarkedElement, Placement };
