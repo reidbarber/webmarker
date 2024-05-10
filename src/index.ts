@@ -1,4 +1,4 @@
-import { computePosition } from "@floating-ui/dom";
+import { autoUpdate, computePosition } from "@floating-ui/dom";
 
 type Placement =
   | "top"
@@ -27,6 +27,12 @@ interface MarkOptions {
     | Partial<CSSStyleDeclaration>
     | ((element: Element) => Partial<CSSStyleDeclaration>);
   /**
+   * The placement of the mark relative to the element.
+   *
+   * @default 'top-start'
+   */
+  markPlacement?: Placement;
+  /**
    * A CSS style to apply to the bounding box element.
    * You can also specify a function that returns a CSS style object.
    * Bounding boxes are only shown if `showMasks` is `true`.
@@ -34,12 +40,6 @@ interface MarkOptions {
   maskStyle?:
     | Partial<CSSStyleDeclaration>
     | ((element: Element) => Partial<CSSStyleDeclaration>);
-  /**
-   * The placement of the mask relative to the element.
-   *
-   * @default 'top-start'
-   */
-  maskPlacement?: Placement;
   /**
    * Whether or not to show bounding boxes around the elements.
    *
@@ -70,6 +70,8 @@ interface MarkedElement {
   maskElement?: HTMLElement;
 }
 
+let cleanupFns: (() => void)[] = [];
+
 async function mark(
   options: MarkOptions = {}
 ): Promise<Map<string, MarkedElement>> {
@@ -81,13 +83,18 @@ async function mark(
       padding: "2px 4px",
       fontSize: "12px",
       fontWeight: "bold",
-      zIndex: "9999",
+      zIndex: "999999999",
+      position: "absolute",
+      pointerEvents: "none",
     },
+    markPlacement = "top-start",
     maskStyle = {
+      position: "absolute",
       outline: "2px dashed red",
       backgroundColor: "transparent",
+      zIndex: "999999999",
+      pointerEvents: "none",
     },
-    maskPlacement = "top-start",
     showMasks = true,
     labelGenerator = (_, index) => index.toString(),
     containerElement = document.body,
@@ -110,22 +117,25 @@ async function mark(
       markElement.className = "webmarker";
       markElement.id = `webmarker-${label}`;
       document.body.appendChild(markElement);
-      const { x, y } = await computePosition(element, markElement, {
-        placement: "top-start",
-      });
-      applyStyle(
-        markElement,
-        {
-          position: "absolute",
-          left: `${x}px`,
-          top: `${y}px`,
-          pointerEvents: "none",
-        },
-        typeof markStyle === "function" ? markStyle(element) : markStyle
-      );
+
+      async function updatePosition() {
+        const { x, y } = await computePosition(element, markElement, {
+          placement: markPlacement,
+        });
+        applyStyle(
+          markElement,
+          {
+            left: `${x}px`,
+            top: `${y}px`,
+          },
+          typeof markStyle === "function" ? markStyle(element) : markStyle
+        );
+      }
+
+      cleanupFns.push(autoUpdate(element, markElement, updatePosition));
 
       const maskElement = showMasks
-        ? createMask(element, maskStyle, label, maskPlacement)
+        ? createMask(element, maskStyle, label)
         : undefined;
 
       markedElements.set(label, { element, markElement, maskElement });
@@ -142,14 +152,13 @@ function createMask(
   style:
     | Partial<CSSStyleDeclaration>
     | ((element: Element) => Partial<CSSStyleDeclaration>),
-  label: string,
-  placement: Placement
+  label: string
 ): HTMLElement {
   const mask = document.createElement("div");
   mask.className = "webmarkermask";
   mask.id = `webmarkermask-${label}`;
   document.body.appendChild(mask);
-  positionMask(mask, element, placement);
+  positionMask(mask, element);
   applyStyle(
     mask,
     {
@@ -162,21 +171,22 @@ function createMask(
 
 async function positionMask(
   mask: HTMLElement,
-  element: Element,
-  placement: Placement
+  element: Element
 ): Promise<void> {
   const { width, height } = element.getBoundingClientRect();
-  const { x: maskX, y: maskY } = await computePosition(element, mask, {
-    placement,
-    strategy: "fixed",
-  });
-  Object.assign(mask.style, {
-    position: "fixed",
-    left: `${maskX}px`,
-    top: `${maskY}px`,
-    width: `${width}px`,
-    height: `${height}px`,
-  });
+  async function updatePosition() {
+    const { x: maskX, y: maskY } = await computePosition(element, mask, {
+      placement: "top-start",
+    });
+    Object.assign(mask.style, {
+      position: "absolute",
+      left: `${maskX}px`,
+      top: `${maskY + height}px`,
+      width: `${width}px`,
+      height: `${height}px`,
+    });
+  }
+  cleanupFns.push(autoUpdate(element, mask, updatePosition));
 }
 
 function applyStyle(
@@ -192,6 +202,7 @@ function unmark(): void {
     .querySelectorAll(".webmarker, .webmarkermask")
     .forEach((el) => el.remove());
   document.documentElement.removeAttribute("data-webmarkered");
+  cleanupFns.forEach((fn) => fn());
 }
 
 function isMarked(): boolean {

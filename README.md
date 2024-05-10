@@ -23,7 +23,7 @@ console.log(elements.get("0").element);
 unmark();
 ```
 
-### Advanced usage
+### Options
 
 ```javascript
 let elements = mark({
@@ -35,8 +35,8 @@ let elements = mark({
   // A custom CSS style to apply to the mask element.
   // Use a transparent background to have it act as a bounding box.
   maskStyle: { outline: "2px dashed blue", backgroundColor: "transparent" },
-  // The placement of the mask relative to the element.
-  maskPlacement: "top-start";
+  // The placement of the mark relative to the element.
+  markPlacement: "top-start";
   // Whether or not to show masks over elements.
   // Defaults to true.
   showMasks: true,
@@ -54,6 +54,6 @@ let elements = mark({
 unmark();
 ```
 
-## Playwright Use Case
+## Use with Playwright
 
 Coming soon
