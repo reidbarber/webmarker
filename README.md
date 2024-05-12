@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/reidbarber/webmarker/assets/8961049/ad6c5770-389e-491f-a9b7-130e5b5a4624">
-    <img width="400px" alt="WebMarker" src="https://github.com/reidbarber/webmarker/assets/8961049/6029db42-72f9-4431-a74d-c2e5eb60aaa5">
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/reidbarber/webmarker/assets/8961049/cd3fd0ff-b31f-42b3-b225-207ffded1640">
+    <img width="400px" alt="WebMarker" src="https://github.com/reidbarber/webmarker/assets/8961049/b017e0c2-a2f7-4b4d-a1e9-9b2cc91d8ae6">
   </picture>
 </p>
 
