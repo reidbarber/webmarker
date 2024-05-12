@@ -1,10 +1,17 @@
-# WebMarker
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/reidbarber/webmarker/assets/8961049/ad6c5770-389e-491f-a9b7-130e5b5a4624">
+    <img width="400px" alt="WebMarker" src="https://github.com/reidbarber/webmarker/assets/8961049/6029db42-72f9-4431-a74d-c2e5eb60aaa5">
+  </picture>
+</p>
 
-A library for marking web pages for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting.
+<p align="center">
+Mark web pages for use with vision-language models.
+</p>
 
 ## Overview
 
-WebMarker adds visual markings with labels to elements on a web page. This can be used to improve visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
+**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
 
 The `mark()` function will add markings for all interactive elements on a web page, and return a Map of the marked elements. The returned Map's keys are the mark labels, and the values are an object with the element (`element`), mark element (`markElement`), and mask element (`markElement`).
 
