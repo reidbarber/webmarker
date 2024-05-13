@@ -83,17 +83,11 @@ async function mark(
       padding: "2px 4px",
       fontSize: "12px",
       fontWeight: "bold",
-      zIndex: "999999999",
-      position: "absolute",
-      pointerEvents: "none",
     },
     markPlacement = "top-start",
     maskStyle = {
-      position: "absolute",
       outline: "2px dashed red",
       backgroundColor: "transparent",
-      zIndex: "999999999",
-      pointerEvents: "none",
     },
     showMasks = true,
     labelGenerator = (_, index) => index.toString(),
@@ -125,6 +119,9 @@ async function mark(
         applyStyle(
           markElement,
           {
+            zIndex: "999999999",
+            position: "absolute",
+            pointerEvents: "none",
             left: `${x}px`,
             top: `${y}px`,
           },
@@ -154,19 +151,21 @@ function createMask(
     | ((element: Element) => Partial<CSSStyleDeclaration>),
   label: string
 ): HTMLElement {
-  const mask = document.createElement("div");
-  mask.className = "webmarkermask";
-  mask.id = `webmarkermask-${label}`;
-  document.body.appendChild(mask);
-  positionMask(mask, element);
+  const maskElement = document.createElement("div");
+  maskElement.className = "webmarkermask";
+  maskElement.id = `webmarkermask-${label}`;
+  document.body.appendChild(maskElement);
+  positionMask(maskElement, element);
   applyStyle(
-    mask,
+    maskElement,
     {
+      zIndex: "999999999",
+      position: "absolute",
       pointerEvents: "none",
     },
     typeof style === "function" ? style(element) : style
   );
-  return mask;
+  return maskElement;
 }
 
 async function positionMask(
