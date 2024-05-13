@@ -35,6 +35,7 @@ describe("WebMarker", () => {
 
   test("removes marks with unmark()", async () => {
     await mark();
+    expect(isMarked()).toBe(true);
     unmark();
     expect(document.querySelector(".webmarker")).toBeNull();
     expect(document.querySelector(".webmarkermask")).toBeNull();
@@ -42,20 +43,17 @@ describe("WebMarker", () => {
   });
 
   test("applies custom styles to marks and masks", async () => {
-    const customMarkStyle = { backgroundColor: "blue", color: "yellow" };
-    const customMaskStyle = { outline: "3px solid green" };
-
     await mark({
-      markStyle: customMarkStyle,
-      maskStyle: customMaskStyle,
-      showMasks: true,
+      markStyle: { backgroundColor: "blue", color: "red" },
+      maskStyle: { outline: "3px solid green" },
     });
 
     const markElement = document.querySelector(".webmarker") as HTMLElement;
     const maskElement = document.querySelector(".webmarkermask") as HTMLElement;
 
     expect(markElement.style.backgroundColor).toBe("blue");
-    expect(markElement.style.color).toBe("yellow");
+    expect(markElement.textContent).toBe("0");
+    expect(markElement.style.color).toBe("red");
     expect(maskElement.style.outline).toBe("3px solid green");
   });
 });
