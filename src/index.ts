@@ -106,30 +106,7 @@ async function mark(
   await Promise.all(
     elements.map(async (element, index) => {
       const label = labelGenerator(element, index);
-      const markElement = document.createElement("div");
-      markElement.textContent = label;
-      markElement.className = "webmarker";
-      markElement.id = `webmarker-${label}`;
-      document.body.appendChild(markElement);
-
-      async function updatePosition() {
-        const { x, y } = await computePosition(element, markElement, {
-          placement: markPlacement,
-        });
-        applyStyle(
-          markElement,
-          {
-            zIndex: "999999999",
-            position: "absolute",
-            pointerEvents: "none",
-            left: `${x}px`,
-            top: `${y}px`,
-          },
-          typeof markStyle === "function" ? markStyle(element) : markStyle
-        );
-      }
-
-      cleanupFns.push(autoUpdate(element, markElement, updatePosition));
+      const markElement = createMark(element, markStyle, label, markPlacement);
 
       const maskElement = showMasks
         ? createMask(element, maskStyle, label)
@@ -142,6 +119,32 @@ async function mark(
 
   document.documentElement.dataset.webmarkered = "true";
   return markedElements;
+}
+
+function createMark(
+  element: Element,
+  style:
+    | Partial<CSSStyleDeclaration>
+    | ((element: Element) => Partial<CSSStyleDeclaration>),
+  label: string,
+  markPlacement: Placement = "top-start"
+): HTMLElement {
+  const markElement = document.createElement("div");
+  markElement.className = "webmarker";
+  markElement.id = `webmarker-${label}`;
+  markElement.textContent = label;
+  document.body.appendChild(markElement);
+  positionMark(markElement, element, markPlacement);
+  applyStyle(
+    markElement,
+    {
+      zIndex: "999999999",
+      position: "absolute",
+      pointerEvents: "none",
+    },
+    typeof style === "function" ? style(element) : style
+  );
+  return markElement;
 }
 
 function createMask(
@@ -168,17 +171,31 @@ function createMask(
   return maskElement;
 }
 
-async function positionMask(
-  mask: HTMLElement,
-  element: Element
-): Promise<void> {
+function positionMark(
+  markElement: HTMLElement,
+  element: Element,
+  markPlacement: Placement
+) {
+  async function updatePosition() {
+    const { x, y } = await computePosition(element, markElement, {
+      placement: markPlacement,
+    });
+    Object.assign(markElement.style, {
+      left: `${x}px`,
+      top: `${y}px`,
+    });
+  }
+
+  cleanupFns.push(autoUpdate(element, markElement, updatePosition));
+}
+
+async function positionMask(mask: HTMLElement, element: Element) {
   const { width, height } = element.getBoundingClientRect();
   async function updatePosition() {
     const { x: maskX, y: maskY } = await computePosition(element, mask, {
       placement: "top-start",
     });
     Object.assign(mask.style, {
-      position: "absolute",
       left: `${maskX}px`,
       top: `${maskY + height}px`,
       width: `${width}px`,
