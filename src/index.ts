@@ -219,6 +219,7 @@ function unmark(): void {
     .forEach((el) => el.remove());
   document.documentElement.removeAttribute("data-webmarkered");
   cleanupFns.forEach((fn) => fn());
+  cleanupFns = [];
 }
 
 function isMarked(): boolean {
