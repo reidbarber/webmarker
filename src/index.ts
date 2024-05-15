@@ -24,8 +24,8 @@ interface MarkOptions {
    * You can also specify a function that returns a CSS style object.
    */
   markStyle?:
-    | Partial<CSSStyleDeclaration>
-    | ((element: Element) => Partial<CSSStyleDeclaration>);
+    | Readonly<Partial<CSSStyleDeclaration>>
+    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>);
   /**
    * The placement of the mark relative to the element.
    *
@@ -38,8 +38,8 @@ interface MarkOptions {
    * Bounding boxes are only shown if `showMasks` is `true`.
    */
   maskStyle?:
-    | Partial<CSSStyleDeclaration>
-    | ((element: Element) => Partial<CSSStyleDeclaration>);
+    | Readonly<Partial<CSSStyleDeclaration>>
+    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>);
   /**
    * Whether or not to show bounding boxes around the elements.
    *
@@ -124,8 +124,8 @@ async function mark(
 function createMark(
   element: Element,
   style:
-    | Partial<CSSStyleDeclaration>
-    | ((element: Element) => Partial<CSSStyleDeclaration>),
+    | Readonly<Partial<CSSStyleDeclaration>>
+    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>),
   label: string,
   markPlacement: Placement = "top-start"
 ): HTMLElement {
@@ -150,8 +150,8 @@ function createMark(
 function createMask(
   element: Element,
   style:
-    | Partial<CSSStyleDeclaration>
-    | ((element: Element) => Partial<CSSStyleDeclaration>),
+    | Readonly<Partial<CSSStyleDeclaration>>
+    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>),
   label: string
 ): HTMLElement {
   const maskElement = document.createElement("div");
@@ -207,8 +207,8 @@ async function positionMask(mask: HTMLElement, element: Element) {
 
 function applyStyle(
   element: HTMLElement,
-  defaultStyle: Partial<CSSStyleDeclaration>,
-  customStyle: Partial<CSSStyleDeclaration>
+  defaultStyle: Readonly<Partial<CSSStyleDeclaration>>,
+  customStyle: Readonly<Partial<CSSStyleDeclaration>>
 ): void {
   Object.assign(element.style, defaultStyle, customStyle);
 }
