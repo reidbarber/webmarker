@@ -11,6 +11,8 @@ Mark web pages for use with vision-language models.
 
 ## Overview
 
+🚧 Under Construction
+
 **WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
 
 The `mark()` function will add markings for all interactive elements on a web page, and return a Map of the marked elements. The returned Map's keys are the mark labels, and the values are an object with the element (`element`), mark element (`markElement`), and mask element (`markElement`).
@@ -18,7 +20,7 @@ The `mark()` function will add markings for all interactive elements on a web pa
 ## Usage
 
 ```javascript
-import { mark, unmark } from "webmarker";
+import { mark, unmark } from "webmarker-js";
 
 // Mark interactive elements on the document
 let elements = await mark();
