@@ -12,8 +12,15 @@ export function Logo() {
 
   if (!mounted) return null;
 
+  let systemAndDark = false;
+  if (theme === "system") {
+    systemAndDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  }
+
   const logoSrc =
-    theme === "dark" ? "/webmarker-dark.png" : "/webmarker-light.png";
+    theme === "dark" || systemAndDark
+      ? "/webmarker-dark.png"
+      : "/webmarker-light.png";
 
   return <Image src={logoSrc} alt="Logo" width={500} height={192} />;
 }
