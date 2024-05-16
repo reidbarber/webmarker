@@ -1,22 +1,36 @@
 import { Demo } from "../components/Demo";
 import { Callout } from "nextra/components";
+import { Tabs } from "nextra/components";
+import { Logo } from "../components/Logo";
 
-# WebMarker
+<p align="center">
+  <Logo />
+</p>
 
-A library for marking web pages for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting with vision-language models.
+<br />
+
+<p align="center">Mark web pages for use with vision-language models.</p>
 
 <Demo />
 
 ## Overview
 
-WebMarker adds visual markings with labels to elements on a web page. This can be used to improve visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
+**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4V, Claude 3, and Google Gemini 1.5.
 
-The `mark()` function will add markings for all interactive elements on a web page, and return a Map of the marked elements. The returned Map's keys are the mark labels, and the values are an object with the element (`element`), mark element (`markElement`), and mask element (`markElement`).
+## Installation
+
+<Tabs items={["yarn", "npm", "pnpm"]}>
+  <Tabs.Tab>```yarn add webmarker-js ```</Tabs.Tab>
+  <Tabs.Tab>```npm install webmarker-js ```</Tabs.Tab>
+  <Tabs.Tab>```pnpm add webmarker-js ```</Tabs.Tab>
+</Tabs>
 
 ## Usage
 
+The `mark()` function will add markings for all interactive elements on a web page, and return a Map of the marked elements. The returned Map's keys are the mark labels, and the values are an object with the element (`element`), mark element (`markElement`), and mask element (`markElement`).
+
 ```javascript
-import { mark, unmark } from "webmarker";
+import { mark, unmark } from "webmarker-js";
 
 // Mark interactive elements on the document
 let elements = await mark();
