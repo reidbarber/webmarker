@@ -1,0 +1,14 @@
+{
+  "name": "webmarker-docs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "next.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "webmarker-js": "^0.0.2"
+  }
+}
