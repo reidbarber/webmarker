@@ -4,6 +4,11 @@ import { useRouter } from "next/router";
 
 const config: DocsThemeConfig = {
   logo: <span>WebMarker</span>,
+  head: (
+    <>
+      <link rel="shortcut icon" href="favicon.ico" />
+    </>
+  ),
   useNextSeoProps() {
     const { pathname } = useRouter();
     if (pathname !== "/") {

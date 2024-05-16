@@ -15,5 +15,5 @@ export function Logo() {
   const logoSrc =
     theme === "dark" ? "/webmarker-dark.png" : "/webmarker-light.png";
 
-  return <Image src={logoSrc} alt="Logo" width={500} height={400} />;
+  return <Image src={logoSrc} alt="Logo" width={500} height={192} />;
 }
