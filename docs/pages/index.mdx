@@ -44,27 +44,51 @@ unmark();
 
 ### Options
 
-```javascript
+- **selector**: A custom CSS selector to specify which elements to mark.
+  - Type: `string`
+  - Default: `"button, input, a, select, textarea"`
+- **markStyle**: A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
+  - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+  - Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
+- **markPlacement**: The placement of the mark relative to the element.
+  - Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
+  - Default: `'top-start'`
+- **maskStyle**: A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showMasks is true.
+  - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+  - Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
+- **showMasks**: Whether or not to show bounding boxes around the elements.
+  - Type: `boolean`
+  - Default: `true`
+- **labelGenerator**: Provide a function for generating labels. By default, labels are generated as numbers starting from 0.
+  - Type: `(element: Element, index: number) => string`
+  - Default: `(_, index) => index.toString()`
+- **containerElement**: Provide a container element to query the elements to be marked. By default, the container element is document.body.
+  - Type: `Element`
+  - Default: `document.body`
+- **viewPortOnly**: Only mark elements that are visible in the current viewport.
+  - Type: `boolean`
+  - Default: `false`
+
+### Advanced example
+
+```typescript
 let elements = mark({
-  // A custom CSS selector for which elements to mark.
-  // The default selector will select all interactive elements.
+  // Only mark buttons and inputs
   selector: "button, input",
-  // A custom CSS style to apply to the mark element.
+  // Use a blue mark with white text
   markStyle: { color: "white", backgroundColor: "blue", padding: 5 },
-  // A custom CSS style to apply to the mask element.
-  // Use a transparent background to have it act as a bounding box.
-  maskStyle: { outline: "2px dashed blue", backgroundColor: "transparent" },
-  // The placement of the mark relative to the element.
-  markPlacement: "top-start";
-  // Whether or not to show masks over elements.
-  // Defaults to true.
+  // Use a blue dashed outline mask with a transparent and slighly blue background
+  maskStyle: { outline: "2px dashed blue", backgroundColor: "rgba(0, 0, 255, 0.1)"},
+  // Place the mark at the top right corner of the element
+  markPlacement: "top-end";
+  // Show masks over elements (defaults to true)
   showMasks: true,
-  // A custom function for generating the labels.
+  // Generate labels as 'Element 0', 'Element 1', 'Element 2'...
   // Defaults to '0', '1', '2'... if not provided.
   labelGenerator: (element, index) => `Element ${index}`,
-  // A container element to query the elements to be marked.
-  // Defaults to the document.
-  containerElement: document.body,
+  // A custom container element to query the elements to be marked.
+  // Defaults to the document.body.
+  containerElement: document.body.querySelector("main"),
   // Only mark elements that are visible in the current viewport
   viewPortOnly: true,
 });
