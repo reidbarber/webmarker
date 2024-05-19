@@ -1,0 +1,9 @@
+demo/
+docs/
+test/
+.parcel-cache/
+.parcelrc
+tsconfig.json
+playwright.config.ts
+jest.config.js
+.babel.config.js
