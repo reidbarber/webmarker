@@ -1,5 +1,5 @@
 import { unmark, mark } from "../src";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export function App() {
   let [isMarked, setMarked] = useState(false);
