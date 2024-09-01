@@ -22,5 +22,5 @@ export function Logo() {
       ? "/webmarker-dark.png"
       : "/webmarker-light.png";
 
-  return <Image src={logoSrc} alt="Logo" width={500} height={192} />;
+  return <Image priority src={logoSrc} alt="Logo" width={500} height={192} />;
 }
