@@ -1,7 +1,10 @@
 {
   "compilerOptions": {
     "baseUrl": "./src",
-    "lib": ["dom", "es2015"]
+    "lib": ["dom", "es2015"],
+    "outDir": "./dist",
+    "declaration": true,
+    "declarationDir": "./dist"
   },
   "include": ["src/**/*"]
 }

@@ -5,16 +5,16 @@ import { useEffect, useState } from "react";
 
 export function Demo() {
   let [isMarked, setMarked] = useState(false);
-  let [elementMap, setElementMap] = useState(new Map());
+  let [markedElements, setMarkedElements] = useState({});
 
   let toggleMark = () => {
     if (isMarked) {
       unmark();
       setMarked(false);
-      setElementMap(new Map());
+      setMarkedElements({});
     } else {
       let elements = mark({});
-      elements.then((res) => setElementMap(res));
+      elements.then((res) => setMarkedElements(res));
       setMarked(true);
     }
   };
@@ -38,7 +38,9 @@ export function Demo() {
         </button>
       </div>
 
-      <div className="text-center">{elementMap.size} marked elements</div>
+      <div className="text-center">
+        {Object.keys(markedElements).length} marked elements
+      </div>
     </div>
   );
 }

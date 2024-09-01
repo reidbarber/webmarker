@@ -1,15 +1,15 @@
 import { unmark, mark } from "../src";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 export function App() {
   let [isMarked, setMarked] = useState(false);
-  let [elementMap, setElementMap] = useState(new Map());
+  let [markedElements, setMarkedElements] = useState(null);
   let demoRef = useRef(null);
 
   useEffect(() => {
     if (!isMarked) {
-      let elements = mark({});
-      elements.then((res) => setElementMap(res));
+      let elements = mark();
+      elements.then((res) => setMarkedElements(res));
       setMarked(true);
     }
   }, []);
@@ -18,10 +18,10 @@ export function App() {
     if (isMarked) {
       unmark();
       setMarked(false);
-      setElementMap(new Map());
+      setMarkedElements(null);
     } else {
       let elements = mark({});
-      elements.then((res) => setElementMap(res));
+      elements.then((res) => setMarkedElements(res));
       setMarked(true);
     }
   };
@@ -55,13 +55,14 @@ export function App() {
       <div>
         <h2>Marked Elements:</h2>
         <ul>
-          {Array.from(elementMap)
-            .map(([key, value]) => ({ key, value }))
-            .map((element) => (
-              <li key={element.key}>
-                {element.key} : {element.value.element.tagName}
-              </li>
-            ))}
+          {markedElements &&
+            Array.from(markedElements)
+              .map(([key, value]) => ({ key, value }))
+              .map((element) => (
+                <li key={element.key}>
+                  {element.key} : {element.value.element.tagName}
+                </li>
+              ))}
         </ul>
       </div>
     </main>
