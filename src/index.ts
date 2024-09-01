@@ -74,7 +74,7 @@ let cleanupFns: (() => void)[] = [];
 
 async function mark(
   options: MarkOptions = {}
-): Promise<Map<string, MarkedElement>> {
+): Promise<Record<string, MarkedElement>> {
   const {
     selector = "button, input, a, select, textarea",
     markStyle = {
@@ -101,7 +101,7 @@ async function mark(
     (el) => !viewPortOnly || el.getBoundingClientRect().top < window.innerHeight
   );
 
-  const markedElements = new Map<string, MarkedElement>();
+  const markedElements: Record<string, MarkedElement> = {};
 
   await Promise.all(
     elements.map(async (element, index) => {
@@ -112,7 +112,7 @@ async function mark(
         ? createMask(element, maskStyle, label)
         : undefined;
 
-      markedElements.set(label, { element, markElement, maskElement });
+      markedElements[label] = { element, markElement, maskElement };
       element.setAttribute("data-webmarkeredby", `webmarker-${label}`);
     })
   );

@@ -22,6 +22,8 @@ test("Mark Wikipedia homepage", async ({ page }) => {
     return await WebMarker.mark();
   });
 
+  expect(Object.keys(marks).length).toBeGreaterThan(0);
+
   // Take a screenshot
   await page.screenshot({ path: "wikipedia-marked.png", fullPage: true });
 

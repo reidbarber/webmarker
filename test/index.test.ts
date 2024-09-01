@@ -17,7 +17,7 @@ describe("WebMarker", () => {
 
   test("marks all interactive elements", async () => {
     const elements = await mark();
-    expect(elements.size).toBe(4);
+    expect(Object.keys(elements).length).toBe(4);
     expect(isMarked()).toBe(true);
   });
 
@@ -27,10 +27,10 @@ describe("WebMarker", () => {
     };
     const elements = await mark(options);
 
-    expect(elements.get("Label 0")?.element.tagName).toBe("BUTTON");
-    expect(elements.get("Label 1")?.element.tagName).toBe("BUTTON");
-    expect(elements.get("Label 2")?.element.tagName).toBe("INPUT");
-    expect(elements.get("Label 3")?.element.tagName).toBe("A");
+    expect(elements["Label 0"].element.tagName).toBe("BUTTON");
+    expect(elements["Label 1"].element.tagName).toBe("BUTTON");
+    expect(elements["Label 2"].element.tagName).toBe("INPUT");
+    expect(elements["Label 3"].element.tagName).toBe("A");
   });
 
   test("removes marks with unmark()", async () => {
