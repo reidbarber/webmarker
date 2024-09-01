@@ -13,7 +13,8 @@
     "demo:build": "esbuild demo/index.js --bundle --minify --outdir=demo/dist",
     "docs:dev": "cd docs && next",
     "docs:build": "cd docs && next build",
-    "docs:start": "cd docs && next start"
+    "docs:start": "cd docs && next start",
+    "test:playwright": "cd test/playwright && npx playwright test"
   },
   "author": "Reid Barber",
   "license": "MIT",
@@ -24,7 +25,9 @@
     "@mdx-js/loader": "^3.0.1",
     "@mdx-js/react": "^3.0.1",
     "@next/mdx": "^14.2.3",
+    "@playwright/test": "^1.46.1",
     "@types/mdx": "^2.0.13",
+    "@types/node": "^22.5.1",
     "autoprefixer": "^10.4.19",
     "babel-jest": "^29.7.0",
     "esbuild": "^0.23.1",
