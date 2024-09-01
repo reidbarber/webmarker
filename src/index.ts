@@ -226,9 +226,11 @@ function isMarked(): boolean {
   return document.documentElement.hasAttribute("data-webmarkered");
 }
 
-window["mark"] = mark;
-window["unmark"] = unmark;
-window["isMarked"] = isMarked;
+if (typeof window !== "undefined") {
+  window["mark"] = mark;
+  window["unmark"] = unmark;
+  window["isMarked"] = isMarked;
+}
 
 export { mark, unmark, isMarked };
 export type { MarkOptions, MarkedElement, Placement };
