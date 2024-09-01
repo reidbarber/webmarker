@@ -17,62 +17,148 @@ import { Logo } from "../components/Logo";
 
 **WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4o, Claude 3.5, and Google Gemini 1.5.
 
-## Installation
+## How it works
 
-<Tabs items={["yarn", "npm", "pnpm"]}>
-  <Tabs.Tab>```yarn add webmarker-js ```</Tabs.Tab>
-  <Tabs.Tab>```npm install webmarker-js ```</Tabs.Tab>
-  <Tabs.Tab>```pnpm add webmarker-js ```</Tabs.Tab>
-</Tabs>
+**1. Call the `mark()` function**
 
-## Usage
+This marks the interactive elements on the page, and returns an object containing the marked elements, where each key is a mark label string, and each value is an object with the following properties:
 
-The `mark()` function will add markings for all interactive elements on a web page, and return an object containing the marked elements. The returned objects's keys are the mark labels, and the values are an object with the element (`element`), mark element (`markElement`), and mask element (`markElement`).
+- `element`: The interactive element that was marked.
+- `markElement`: The label element that was added to the page.
+- `maskElement`: The bounding box element that was added to the page.
+
+You can use this information to build your prompt for the vision-language model.
+
+**2. Send a screenshot of the marked page to a vision-language model, along with your prompt**
+
+Example prompt:
 
 ```javascript
-import { mark, unmark } from "webmarker-js";
+let markedElements = await mark();
 
-// Mark interactive elements on the document
-let elements = await mark();
+let prompt = `The following is a screenshot of a web page.
 
-// Reference an element by label
-console.log(elements.get("0").element);
+Interactive elements have been marked with red bounding boxes and labels.
 
-// Remove markings
-unmark();
+When referring to elements, use the labels to identify them.
+
+Return an action and element to perform the action on.
+
+Available actions: click, hover
+
+Available elements:
+${Object.keys(markedElements)
+  .map((label) => `- ${label}`)
+  .join("\n")}
+
+Example response: click 0
+`;
 ```
 
-### Options
+**3. Programmatically interact with the marked elements.**
 
-- **selector**: A custom CSS selector to specify which elements to mark.
-  - Type: `string`
-  - Default: `"button, input, a, select, textarea"`
-- **markStyle**: A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
-  - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
-  - Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
-- **markPlacement**: The placement of the mark relative to the element.
-  - Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
-  - Default: `'top-start'`
-- **maskStyle**: A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showMasks is true.
-  - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
-  - Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
-- **showMasks**: Whether or not to show bounding boxes around the elements.
-  - Type: `boolean`
-  - Default: `true`
-- **labelGenerator**: Provide a function for generating labels. By default, labels are generated as numbers starting from 0.
-  - Type: `(element: Element, index: number) => string`
-  - Default: `(_, index) => index.toString()`
-- **containerElement**: Provide a container element to query the elements to be marked. By default, the container element is document.body.
-  - Type: `Element`
-  - Default: `document.body`
-- **viewPortOnly**: Only mark elements that are visible in the current viewport.
-  - Type: `boolean`
-  - Default: `false`
+In a web browser (i.e. via Playwright), interact with elements as needed.
+
+For prompting or agent ideas, see the [WebVoyager](https://arxiv.org/abs/2401.13919) paper.
+
+## Playwright example
+
+```javascript
+// Inject the WebMarker library into the page
+await page.addScriptTag({
+  url: "https://cdn.jsdelivr.net/npm/webmarker-js/dist/main.js",
+});
+
+// Mark the page and get the marked elements
+let markedElements = await page.evaluate(async () => await WebMarker.mark());
+
+// (Optional) Check if page is marked
+let isMarked = await page.evaluate(async () => await WebMarker.isMarked());
+
+// (Optional) Unmark the page
+await page.evaluate(async () => await WebMarker.unmark());
+```
+
+## Installation
+
+<Tabs items={["yarn", "npm", "pnpm", "jsDelivr", "unpkg"]}>
+  <Tabs.Tab>```yarn add webmarker-js```</Tabs.Tab>
+  <Tabs.Tab>```npm install webmarker-js```</Tabs.Tab>
+  <Tabs.Tab>```pnpm add webmarker-js```</Tabs.Tab>
+  <Tabs.Tab>
+    ```html
+    <script src="https://cdn.jsdelivr.net/npm/webmarker-js/dist/main.js"></script>
+    ```
+  </Tabs.Tab>
+  <Tabs.Tab>
+    ```html
+    <script src="https://unpkg.com/webmarker-js/dist/main.js"></script>
+    ```
+  </Tabs.Tab>
+</Tabs>
+
+## Options
+
+### selector
+
+A custom CSS selector to specify which elements to mark.
+
+- Type: `string`
+- Default: `"button, input, a, select, textarea"`
+
+### markStyle
+
+A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
+
+- Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+- Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
+
+### markPlacement
+
+The placement of the mark relative to the element.
+
+- Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
+- Default: `'top-start'`
+
+### maskStyle
+
+A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showMasks is true.
+
+- Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+- Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
+
+### showMasks
+
+Whether or not to show bounding boxes around the elements.
+
+- Type: `boolean`
+- Default: `true`
+
+### labelGenerator
+
+Provide a function for generating labels. By default, labels are generated as integers starting from 0.
+
+- Type: `(element: Element, index: number) => string`
+- Default: `(_, index) => index.toString()`
+
+### containerElement
+
+Provide a container element to query the elements to be marked. By default, the container element is document.body.
+
+- Type: `Element`
+- Default: `document.body`
+
+### viewPortOnly
+
+Only mark elements that are visible in the current viewport.
+
+- Type: `boolean`
+- Default: `false`
 
 ### Advanced example
 
 ```typescript
-let elements = mark({
+const markedElements = await mark({
   // Only mark buttons and inputs
   selector: "button, input",
   // Use a blue mark with white text
@@ -92,13 +178,4 @@ let elements = mark({
   // Only mark elements that are visible in the current viewport
   viewPortOnly: true,
 });
-
-// Cleanup
-unmark();
 ```
-
-## Use with Playwright
-
-<Callout emoji="🚧" type="info">
-  Coming soon
-</Callout>
