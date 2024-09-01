@@ -34,6 +34,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "webmarker-js": "^0.0.2"
+    "webmarker-js": "^0.0.6"
   }
 }
