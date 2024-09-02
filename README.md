@@ -86,6 +86,13 @@ A custom CSS selector to specify which elements to mark.
 - Type: `string`
 - Default: `"button, input, a, select, textarea"`
 
+### markAttribute
+
+A custom attribute to add to the marked elements. This attribute contains the label of the mark.
+
+- Type: `string`
+- Default: `"data-mark-id"`
+
 ### markStyle
 
 A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
@@ -141,6 +148,8 @@ Only mark elements that are visible in the current viewport.
 const markedElements = await mark({
   // Only mark buttons and inputs
   selector: "button, input",
+  // Use test id attribute for marker labels
+  markAttribute: "data-test-id",
   // Use a blue mark with white text
   markStyle: { color: "white", backgroundColor: "blue", padding: 5 },
   // Use a blue dashed outline mask with a transparent and slighly blue background

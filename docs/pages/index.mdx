@@ -27,6 +27,8 @@ This marks the interactive elements on the page, and returns an object containin
 - `markElement`: The label element that was added to the page.
 - `maskElement`: The bounding box element that was added to the page.
 
+A `data-mark-id` attribute containing the label is also added to each marked element.
+
 You can use this information to build your prompt for the vision-language model.
 
 **2. Send a screenshot of the marked page to a vision-language model, along with your prompt**
@@ -72,6 +74,9 @@ await page.addScriptTag({
 // Mark the page and get the marked elements
 let markedElements = await page.evaluate(async () => await WebMarker.mark());
 
+// Click a marked element
+await page.locator('[data-mark-id="0"]').click();
+
 // (Optional) Check if page is marked
 let isMarked = await page.evaluate(async () => await WebMarker.isMarked());
 
@@ -105,6 +110,13 @@ A custom CSS selector to specify which elements to mark.
 
 - Type: `string`
 - Default: `"button, input, a, select, textarea"`
+
+### markAttribute
+
+A custom attribute to add to the marked elements. This attribute contains the label of the mark.
+
+- Type: `string`
+- Default: `"data-mark-id"`
 
 ### markStyle
 
@@ -161,6 +173,8 @@ Only mark elements that are visible in the current viewport.
 const markedElements = await mark({
   // Only mark buttons and inputs
   selector: "button, input",
+  // Use test id attribute for marker labels
+  markAttribute: "data-test-id",
   // Use a blue mark with white text
   markStyle: { color: "white", backgroundColor: "blue", padding: 5 },
   // Use a blue dashed outline mask with a transparent and slighly blue background

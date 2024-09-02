@@ -17,8 +17,24 @@ describe("WebMarker", () => {
 
   test("marks all interactive elements", async () => {
     const elements = await mark();
+    let marks = document.querySelectorAll(".webmarker");
+    let masks = document.querySelectorAll(".webmarker-mask");
+
+    expect(marks.length).toBe(4);
+    expect(masks.length).toBe(4);
     expect(Object.keys(elements).length).toBe(4);
     expect(isMarked()).toBe(true);
+
+    // Check that data-mark-id gets added
+    Object.entries(elements).forEach(([label, { element }]) => {
+      expect(element.attributes["data-mark-id"].value).toBe(label);
+    });
+
+    // Check that mark elements are added correctly
+    marks.forEach((mark) => {
+      expect(mark.tagName).toBe("DIV");
+      expect(elements.hasOwnProperty(mark.textContent as string)).toBe(true);
+    });
   });
 
   test("assigns correct labels to elements", async () => {
@@ -38,7 +54,7 @@ describe("WebMarker", () => {
     expect(isMarked()).toBe(true);
     unmark();
     expect(document.querySelector(".webmarker")).toBeNull();
-    expect(document.querySelector(".webmarkermask")).toBeNull();
+    expect(document.querySelector(".webmarker-mask")).toBeNull();
     expect(isMarked()).toBe(false);
   });
 
@@ -49,11 +65,22 @@ describe("WebMarker", () => {
     });
 
     const markElement = document.querySelector(".webmarker") as HTMLElement;
-    const maskElement = document.querySelector(".webmarkermask") as HTMLElement;
+    const maskElement = document.querySelector(
+      ".webmarker-mask"
+    ) as HTMLElement;
 
     expect(markElement.style.backgroundColor).toBe("blue");
     expect(markElement.textContent).toBe("0");
     expect(markElement.style.color).toBe("red");
     expect(maskElement.style.outline).toBe("3px solid green");
+  });
+
+  test("supports custom attribute", async () => {
+    await mark({
+      markAttribute: "data-testid",
+    });
+
+    const elements = document.querySelectorAll("[data-testid]");
+    expect(elements.length).toBe(4);
   });
 });

@@ -20,6 +20,12 @@ interface MarkOptions {
    */
   selector?: string;
   /**
+   * Name for the attribute added to the marked elements. This attribute is used to store the label.
+   *
+   * @default 'data-mark-id'
+   */
+  markAttribute?: string;
+  /**
    * A CSS style to apply to the label element.
    * You can also specify a function that returns a CSS style object.
    */
@@ -77,6 +83,7 @@ async function mark(
 ): Promise<Record<string, MarkedElement>> {
   const {
     selector = "button, input, a, select, textarea",
+    markAttribute = "data-mark-id",
     markStyle = {
       backgroundColor: "red",
       color: "white",
@@ -113,7 +120,7 @@ async function mark(
         : undefined;
 
       markedElements[label] = { element, markElement, maskElement };
-      element.setAttribute("data-webmarkeredby", `webmarker-${label}`);
+      element.setAttribute(markAttribute, label);
     })
   );
 
@@ -155,8 +162,8 @@ function createMask(
   label: string
 ): HTMLElement {
   const maskElement = document.createElement("div");
-  maskElement.className = "webmarkermask";
-  maskElement.id = `webmarkermask-${label}`;
+  maskElement.className = "webmarker-mask";
+  maskElement.id = `webmarker-mask-${label}`;
   document.body.appendChild(maskElement);
   positionMask(maskElement, element);
   applyStyle(
@@ -215,7 +222,7 @@ function applyStyle(
 
 function unmark(): void {
   document
-    .querySelectorAll(".webmarker, .webmarkermask")
+    .querySelectorAll(".webmarker, .webmarker-mask")
     .forEach((el) => el.remove());
   document.documentElement.removeAttribute("data-webmarkered");
   cleanupFns.forEach((fn) => fn());
