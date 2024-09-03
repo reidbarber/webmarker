@@ -4,26 +4,22 @@ import { unmark, mark } from "webmarker-js";
 import { useEffect, useState } from "react";
 
 export function Demo() {
-  let [isMarked, setMarked] = useState(false);
   let [markedElements, setMarkedElements] = useState({});
+  const isMarked = Object.keys(markedElements).length > 0;
 
   let toggleMark = () => {
     if (isMarked) {
       unmark();
-      setMarked(false);
       setMarkedElements({});
     } else {
       let elements = mark({});
       elements.then((res) => setMarkedElements(res));
-      setMarked(true);
     }
   };
 
   useEffect(() => {
     return () => {
-      if (isMarked) {
-        unmark();
-      }
+      unmark();
     };
   }, []);
 

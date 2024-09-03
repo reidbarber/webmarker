@@ -9,13 +9,16 @@ import { Logo } from "../components/Logo";
 
 <br />
 
-<p align="center">Mark web pages for use with vision-language models.</p>
+<p align="center">Mark web pages for use with large language models</p>
 
 <Demo />
 
 ## Overview
 
-**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4o, Claude 3.5, and Google Gemini 1.5.
+**WebMarker** is a JavaScript library used for adding visual markers and labels to elements on a web page. This can be used for [Set-of-Mark](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as [GPT-4o](https://platform.openai.com/docs/guides/vision), [Claude 3.5](https://www.anthropic.com/news/claude-3-5-sonnet), and [Google Gemini 1.5](https://ai.google.dev/gemini-api/docs/vision). This library aims to:
+
+- Improve LLM performance on vision tasks referencing web pages
+- Enable reliable web page interactions based on LLM responses
 
 ## How it works
 
@@ -29,9 +32,9 @@ This marks the interactive elements on the page, and returns an object containin
 
 A `data-mark-id` attribute containing the label is also added to each marked element.
 
-You can use this information to build your prompt for the vision-language model.
+You can use this information to build your prompt for the large language model.
 
-**2. Send a screenshot of the marked page to a vision-language model, along with your prompt**
+**2. Send a screenshot of the marked page to a large language model, along with your prompt**
 
 Example prompt:
 
@@ -61,7 +64,7 @@ Example response: click 0
 
 In a web browser (i.e. via Playwright), interact with elements as needed.
 
-For prompting or agent ideas, see the [WebVoyager](https://arxiv.org/abs/2401.13919) paper.
+For prompting or web agent ideas, see the [WebVoyager](https://github.com/MinorJerry/WebVoyager) paper.
 
 ## Playwright example
 
@@ -102,72 +105,88 @@ await page.evaluate(async () => await WebMarker.unmark());
   </Tabs.Tab>
 </Tabs>
 
-## Options
+## API
 
-### selector
+### mark()
+
+Marks the page and returns the marked elements.
+
+```typescript
+const markedElements = await mark();
+
+// markedElements["0"].element returns the first marked element
+// markedElements["0"].markElement returns the label element for the first marked element
+// markedElements["0"].maskElement returns the bounding box element for the first marked element
+```
+
+Optionally accepts an options object support the properties below.
+
+#### Options
+
+##### selector
 
 A custom CSS selector to specify which elements to mark.
 
 - Type: `string`
 - Default: `"button, input, a, select, textarea"`
 
-### markAttribute
+##### markAttribute
 
 A custom attribute to add to the marked elements. This attribute contains the label of the mark.
 
 - Type: `string`
 - Default: `"data-mark-id"`
 
-### markStyle
+##### markStyle
 
 A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
 
 - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
 - Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
 
-### markPlacement
+##### markPlacement
 
 The placement of the mark relative to the element.
 
 - Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
 - Default: `'top-start'`
 
-### maskStyle
+##### maskStyle
 
 A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showMasks is true.
 
 - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
 - Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
 
-### showMasks
+##### showMasks
 
 Whether or not to show bounding boxes around the elements.
 
 - Type: `boolean`
 - Default: `true`
 
-### labelGenerator
+##### labelGenerator
 
 Provide a function for generating labels. By default, labels are generated as integers starting from 0.
 
 - Type: `(element: Element, index: number) => string`
 - Default: `(_, index) => index.toString()`
 
-### containerElement
+##### containerElement
 
 Provide a container element to query the elements to be marked. By default, the container element is document.body.
 
 - Type: `Element`
 - Default: `document.body`
 
-### viewPortOnly
+##### viewPortOnly
 
 Only mark elements that are visible in the current viewport.
 
 - Type: `boolean`
 - Default: `false`
 
-### Advanced example
+#### Advanced example
 
 ```typescript
 const markedElements = await mark({
@@ -192,4 +211,20 @@ const markedElements = await mark({
   // Only mark elements that are visible in the current viewport
   viewPortOnly: true,
 });
+```
+
+### isMarked()
+
+Check if the page is marked.
+
+```typescript
+const isMarked = await isMarked();
+```
+
+### unmark()
+
+Unmark the page.
+
+```typescript
+await unmark();
 ```
