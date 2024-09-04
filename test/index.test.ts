@@ -18,16 +18,16 @@ describe("WebMarker", () => {
   test("marks all interactive elements", async () => {
     const elements = await mark();
     let marks = document.querySelectorAll(".webmarker");
-    let masks = document.querySelectorAll(".webmarker-mask");
+    let boundingBoxes = document.querySelectorAll(".webmarker-bounding-box");
 
     expect(marks.length).toBe(4);
-    expect(masks.length).toBe(4);
+    expect(boundingBoxes.length).toBe(4);
     expect(Object.keys(elements).length).toBe(4);
     expect(isMarked()).toBe(true);
 
-    // Check that data-mark-id gets added
+    // Check that data-mark-label gets added
     Object.entries(elements).forEach(([label, { element }]) => {
-      expect(element.attributes["data-mark-id"].value).toBe(label);
+      expect(element.attributes["data-mark-label"].value).toBe(label);
     });
 
     // Check that mark elements are added correctly
@@ -39,7 +39,7 @@ describe("WebMarker", () => {
 
   test("assigns correct labels to elements", async () => {
     const options: MarkOptions = {
-      labelGenerator: (_, index) => `Label ${index}`,
+      getLabel: (_, index) => `Label ${index}`,
     };
     const elements = await mark(options);
 
@@ -54,25 +54,25 @@ describe("WebMarker", () => {
     expect(isMarked()).toBe(true);
     unmark();
     expect(document.querySelector(".webmarker")).toBeNull();
-    expect(document.querySelector(".webmarker-mask")).toBeNull();
+    expect(document.querySelector(".webmarker-bounding-box")).toBeNull();
     expect(isMarked()).toBe(false);
   });
 
-  test("applies custom styles to marks and masks", async () => {
+  test("applies custom styles to marks and boundingBoxes", async () => {
     await mark({
       markStyle: { backgroundColor: "blue", color: "red" },
-      maskStyle: { outline: "3px solid green" },
+      boundingBoxStyle: { outline: "3px solid green" },
     });
 
     const markElement = document.querySelector(".webmarker") as HTMLElement;
-    const maskElement = document.querySelector(
-      ".webmarker-mask"
+    const boundingBoxElement = document.querySelector(
+      ".webmarker-bounding-box"
     ) as HTMLElement;
 
     expect(markElement.style.backgroundColor).toBe("blue");
     expect(markElement.textContent).toBe("0");
     expect(markElement.style.color).toBe("red");
-    expect(maskElement.style.outline).toBe("3px solid green");
+    expect(boundingBoxElement.style.outline).toBe("3px solid green");
   });
 
   test("supports custom attribute", async () => {
