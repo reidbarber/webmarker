@@ -3,13 +3,15 @@ import { Callout } from "nextra/components";
 import { Tabs } from "nextra/components";
 import { Logo } from "../components/Logo";
 
-<p align="center">
+<div className="flex justify-center">
   <Logo />
-</p>
+</div>
 
 <br />
 
-<p align="center">Mark web pages for use with large language models</p>
+<div className="text-center">
+  Mark web pages for use with multimodal large language models
+</div>
 
 <Demo />
 
@@ -28,9 +30,9 @@ This marks the interactive elements on the page, and returns an object containin
 
 - `element`: The interactive element that was marked.
 - `markElement`: The label element that was added to the page.
-- `maskElement`: The bounding box element that was added to the page.
+- `boundingBoxElement`: The bounding box element that was added to the page.
 
-A `data-mark-id` attribute containing the label is also added to each marked element.
+A `data-mark-label` attribute containing the label is also added to each marked element.
 
 You can use this information to build your prompt for the large language model.
 
@@ -78,7 +80,7 @@ await page.addScriptTag({
 let markedElements = await page.evaluate(async () => await WebMarker.mark());
 
 // Click a marked element
-await page.locator('[data-mark-id="0"]').click();
+await page.locator('[data-mark-label="0"]').click();
 
 // (Optional) Check if page is marked
 let isMarked = await page.evaluate(async () => await WebMarker.isMarked());
@@ -116,7 +118,7 @@ const markedElements = await mark();
 
 // markedElements["0"].element returns the first marked element
 // markedElements["0"].markElement returns the label element for the first marked element
-// markedElements["0"].maskElement returns the bounding box element for the first marked element
+// markedElements["0"].boundingBoxElement returns the bounding box element for the first marked element
 ```
 
 Optionally accepts an options object support the properties below.
@@ -130,19 +132,19 @@ A custom CSS selector to specify which elements to mark.
 - Type: `string`
 - Default: `"button, input, a, select, textarea"`
 
+##### getLabel
+
+Provide a function for generating labels. By default, labels are generated as integers starting from 0.
+
+- Type: `(element: Element, index: number) => string`
+- Default: `(_, index) => index.toString()`
+
 ##### markAttribute
 
 A custom attribute to add to the marked elements. This attribute contains the label of the mark.
 
 - Type: `string`
-- Default: `"data-mark-id"`
-
-##### markStyle
-
-A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
-
-- Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
-- Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
+- Default: `"data-mark-label"`
 
 ##### markPlacement
 
@@ -151,26 +153,26 @@ The placement of the mark relative to the element.
 - Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
 - Default: `'top-start'`
 
-##### maskStyle
+##### markStyle
 
-A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showMasks is true.
+A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
+
+- Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+- Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
+
+##### boundingBoxStyle
+
+A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showBoundingBoxes is true.
 
 - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
 - Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
 
-##### showMasks
+##### showBoundingBoxes
 
 Whether or not to show bounding boxes around the elements.
 
 - Type: `boolean`
 - Default: `true`
-
-##### labelGenerator
-
-Provide a function for generating labels. By default, labels are generated as integers starting from 0.
-
-- Type: `(element: Element, index: number) => string`
-- Default: `(_, index) => index.toString()`
 
 ##### containerElement
 
@@ -196,15 +198,15 @@ const markedElements = await mark({
   markAttribute: "data-test-id",
   // Use a blue mark with white text
   markStyle: { color: "white", backgroundColor: "blue", padding: 5 },
-  // Use a blue dashed outline mask with a transparent and slighly blue background
-  maskStyle: { outline: "2px dashed blue", backgroundColor: "rgba(0, 0, 255, 0.1)"},
+  // Use a blue dashed outline with a transparent and slighly blue background
+  boundingBoxStyle: { outline: "2px dashed blue", backgroundColor: "rgba(0, 0, 255, 0.1)"},
   // Place the mark at the top right corner of the element
   markPlacement: "top-end";
-  // Show masks over elements (defaults to true)
-  showMasks: true,
+  // Show bounding boxes over elements (defaults to true)
+  showBoundingBoxes: true,
   // Generate labels as 'Element 0', 'Element 1', 'Element 2'...
   // Defaults to '0', '1', '2'... if not provided.
-  labelGenerator: (element, index) => `Element ${index}`,
+  getLabel: (element, index) => `Element ${index}`,
   // A custom container element to query the elements to be marked.
   // Defaults to the document.body.
   containerElement: document.body.querySelector("main"),

@@ -14,24 +14,25 @@ type Placement =
   | "left-start"
   | "left-end";
 
+type StyleFunction = (element: Element) => CSSStyleDeclaration;
+type StyleObject = Readonly<Partial<CSSStyleDeclaration>>;
+
 interface MarkOptions {
   /**
-   * A CSS selector to specify the elements to be marked.
+   * A CSS selector to query the elements to be marked.
    */
   selector?: string;
   /**
-   * Name for the attribute added to the marked elements. This attribute is used to store the label.
+   * Provide a function for generating labels.
+   * By default, labels are generated as numbers starting from 0.
+   */
+  getLabel?: (element: Element, index: number) => string;
+  /**
+   * Name for the attribute added to the marked elements to store the mark label.
    *
-   * @default 'data-mark-id'
+   * @default 'data-mark-label'
    */
   markAttribute?: string;
-  /**
-   * A CSS style to apply to the label element.
-   * You can also specify a function that returns a CSS style object.
-   */
-  markStyle?:
-    | Readonly<Partial<CSSStyleDeclaration>>
-    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>);
   /**
    * The placement of the mark relative to the element.
    *
@@ -39,24 +40,22 @@ interface MarkOptions {
    */
   markPlacement?: Placement;
   /**
+   * A CSS style to apply to the label element.
+   * You can also specify a function that returns a CSS style object.
+   */
+  markStyle?: StyleObject | StyleFunction;
+  /**
    * A CSS style to apply to the bounding box element.
    * You can also specify a function that returns a CSS style object.
-   * Bounding boxes are only shown if `showMasks` is `true`.
+   * Bounding boxes are only shown if `showBoundingBoxes` is `true`.
    */
-  maskStyle?:
-    | Readonly<Partial<CSSStyleDeclaration>>
-    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>);
+  boundingBoxStyle?: StyleObject | StyleFunction;
   /**
    * Whether or not to show bounding boxes around the elements.
    *
    * @default true
    */
-  showMasks?: boolean;
-  /**
-   * Provide a function for generating labels.
-   * By default, labels are generated as numbers starting from 0.
-   */
-  labelGenerator?: (element: Element, index: number) => string;
+  showBoundingBoxes?: boolean;
   /**
    * Provide a container element to query the elements to be marked.
    * By default, the container element is `document.body`.
@@ -73,7 +72,7 @@ interface MarkOptions {
 interface MarkedElement {
   element: Element;
   markElement: HTMLElement;
-  maskElement?: HTMLElement;
+  boundingBoxElement?: HTMLElement;
 }
 
 let cleanupFns: (() => void)[] = [];
@@ -83,7 +82,9 @@ async function mark(
 ): Promise<Record<string, MarkedElement>> {
   const {
     selector = "button, input, a, select, textarea",
-    markAttribute = "data-mark-id",
+    getLabel = (_, index) => index.toString(),
+    markAttribute = "data-mark-label",
+    markPlacement = "top-start",
     markStyle = {
       backgroundColor: "red",
       color: "white",
@@ -91,13 +92,11 @@ async function mark(
       fontSize: "12px",
       fontWeight: "bold",
     },
-    markPlacement = "top-start",
-    maskStyle = {
+    boundingBoxStyle = {
       outline: "2px dashed red",
       backgroundColor: "transparent",
     },
-    showMasks = true,
-    labelGenerator = (_, index) => index.toString(),
+    showBoundingBoxes = true,
     containerElement = document.body,
     viewPortOnly = false,
   } = options;
@@ -112,27 +111,25 @@ async function mark(
 
   await Promise.all(
     elements.map(async (element, index) => {
-      const label = labelGenerator(element, index);
+      const label = getLabel(element, index);
       const markElement = createMark(element, markStyle, label, markPlacement);
 
-      const maskElement = showMasks
-        ? createMask(element, maskStyle, label)
+      const boundingBoxElement = showBoundingBoxes
+        ? createBoundingBox(element, boundingBoxStyle, label)
         : undefined;
 
-      markedElements[label] = { element, markElement, maskElement };
+      markedElements[label] = { element, markElement, boundingBoxElement };
       element.setAttribute(markAttribute, label);
     })
   );
 
-  document.documentElement.dataset.webmarkered = "true";
+  document.documentElement.setAttribute("data-marked", "true");
   return markedElements;
 }
 
 function createMark(
   element: Element,
-  style:
-    | Readonly<Partial<CSSStyleDeclaration>>
-    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>),
+  style: StyleObject | StyleFunction,
   label: string,
   markPlacement: Placement = "top-start"
 ): HTMLElement {
@@ -154,20 +151,18 @@ function createMark(
   return markElement;
 }
 
-function createMask(
+function createBoundingBox(
   element: Element,
-  style:
-    | Readonly<Partial<CSSStyleDeclaration>>
-    | ((element: Element) => Readonly<Partial<CSSStyleDeclaration>>),
+  style: StyleObject | StyleFunction,
   label: string
 ): HTMLElement {
-  const maskElement = document.createElement("div");
-  maskElement.className = "webmarker-mask";
-  maskElement.id = `webmarker-mask-${label}`;
-  document.body.appendChild(maskElement);
-  positionMask(maskElement, element);
+  const boundingBoxElement = document.createElement("div");
+  boundingBoxElement.className = "webmarker-bounding-box";
+  boundingBoxElement.id = `webmarker-bounding-box-${label}`;
+  document.body.appendChild(boundingBoxElement);
+  positionBoundingBox(boundingBoxElement, element);
   applyStyle(
-    maskElement,
+    boundingBoxElement,
     {
       zIndex: "999999999",
       position: "absolute",
@@ -175,7 +170,7 @@ function createMask(
     },
     typeof style === "function" ? style(element) : style
   );
-  return maskElement;
+  return boundingBoxElement;
 }
 
 function positionMark(
@@ -196,41 +191,41 @@ function positionMark(
   cleanupFns.push(autoUpdate(element, markElement, updatePosition));
 }
 
-async function positionMask(mask: HTMLElement, element: Element) {
+async function positionBoundingBox(boundingBox: HTMLElement, element: Element) {
   const { width, height } = element.getBoundingClientRect();
   async function updatePosition() {
-    const { x: maskX, y: maskY } = await computePosition(element, mask, {
+    const { x, y } = await computePosition(element, boundingBox, {
       placement: "top-start",
     });
-    Object.assign(mask.style, {
-      left: `${maskX}px`,
-      top: `${maskY + height}px`,
+    Object.assign(boundingBox.style, {
+      left: `${x}px`,
+      top: `${y + height}px`,
       width: `${width}px`,
       height: `${height}px`,
     });
   }
-  cleanupFns.push(autoUpdate(element, mask, updatePosition));
+  cleanupFns.push(autoUpdate(element, boundingBox, updatePosition));
 }
 
 function applyStyle(
   element: HTMLElement,
-  defaultStyle: Readonly<Partial<CSSStyleDeclaration>>,
-  customStyle: Readonly<Partial<CSSStyleDeclaration>>
+  defaultStyle: Partial<CSSStyleDeclaration>,
+  customStyle: Partial<CSSStyleDeclaration>
 ): void {
   Object.assign(element.style, defaultStyle, customStyle);
 }
 
 function unmark(): void {
   document
-    .querySelectorAll(".webmarker, .webmarker-mask")
+    .querySelectorAll(".webmarker, .webmarker-bounding-box")
     .forEach((el) => el.remove());
-  document.documentElement.removeAttribute("data-webmarkered");
+  document.documentElement.removeAttribute("data-marked");
   cleanupFns.forEach((fn) => fn());
   cleanupFns = [];
 }
 
 function isMarked(): boolean {
-  return document.documentElement.hasAttribute("data-webmarkered");
+  return document.documentElement.hasAttribute("data-marked");
 }
 
 if (typeof window !== "undefined") {

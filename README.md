@@ -15,7 +15,6 @@ Mark web pages for use with vision-language models.
 
 ![Screenshot of marked Google homepage](https://github.com/user-attachments/assets/722e1034-06d4-4ccd-a7d6-f03749435681)
 
-
 ## How it works
 
 **1. Call the `mark()` function**
@@ -24,7 +23,7 @@ This marks the interactive elements on the page, and returns an object containin
 
 - `element`: The interactive element that was marked.
 - `markElement`: The label element that was added to the page.
-- `maskElement`: The bounding box element that was added to the page.
+- `boundingBoxElement`: The bounding box element that was added to the page.
 
 You can use this information to build your prompt for the vision-language model.
 
@@ -58,7 +57,7 @@ Example response: click 0
 
 In a web browser (i.e. via Playwright), interact with elements as needed.
 
-For prompting or agent ideas, see the [WebVoyager](https://arxiv.org/abs/2401.13919) paper.
+For prompting or agent ideas, see the [WebVoyager](https://github.com/MinorJerry/WebVoyager) paper.
 
 ## Playwright example
 
@@ -70,6 +69,9 @@ await page.addScriptTag({
 
 // Mark the page and get the marked elements
 let markedElements = await page.evaluate(async () => await WebMarker.mark());
+
+// Click a marked element
+await page.locator('[data-mark-label="0"]').click();
 
 // (Optional) Check if page is marked
 let isMarked = await page.evaluate(async () => await WebMarker.isMarked());
@@ -92,7 +94,7 @@ A custom CSS selector to specify which elements to mark.
 A custom attribute to add to the marked elements. This attribute contains the label of the mark.
 
 - Type: `string`
-- Default: `"data-mark-id"`
+- Default: `"data-mark-label"`
 
 ### markStyle
 
@@ -108,21 +110,21 @@ The placement of the mark relative to the element.
 - Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
 - Default: `'top-start'`
 
-### maskStyle
+### boundingBoxStyle
 
-A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showMasks is true.
+A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showBoundingBoxes is true.
 
 - Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
 - Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
 
-### showMasks
+### showBoundingBoxes
 
 Whether or not to show bounding boxes around the elements.
 
 - Type: `boolean`
 - Default: `true`
 
-### labelGenerator
+### getLabel
 
 Provide a function for generating labels. By default, labels are generated as integers starting from 0.
 
@@ -153,15 +155,15 @@ const markedElements = await mark({
   markAttribute: "data-test-id",
   // Use a blue mark with white text
   markStyle: { color: "white", backgroundColor: "blue", padding: 5 },
-  // Use a blue dashed outline mask with a transparent and slighly blue background
-  maskStyle: { outline: "2px dashed blue", backgroundColor: "rgba(0, 0, 255, 0.1)"},
+  // Use a blue dashed outline with a transparent and slighly blue background
+  boundingBoxStyle: { outline: "2px dashed blue", backgroundColor: "rgba(0, 0, 255, 0.1)"},
   // Place the mark at the top right corner of the element
   markPlacement: "top-end";
-  // Show masks over elements (defaults to true)
-  showMasks: true,
+  // Show bounding boxes over elements (defaults to true)
+  showBoundingBoxes: true,
   // Generate labels as 'Element 0', 'Element 1', 'Element 2'...
   // Defaults to '0', '1', '2'... if not provided.
-  labelGenerator: (element, index) => `Element ${index}`,
+  getLabel: (element, index) => `Element ${index}`,
   // A custom container element to query the elements to be marked.
   // Defaults to the document.body.
   containerElement: document.body.querySelector("main"),
