@@ -11,7 +11,7 @@ Mark web pages for use with vision-language models.
 
 ## Overview
 
-**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark (SoM)](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4o, Claude 3.5, and Google Gemini 1.5.
+**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4o, Claude 3.5, and Google Gemini 1.5.
 
 ![Screenshot of marked Google homepage](https://github.com/user-attachments/assets/722e1034-06d4-4ccd-a7d6-f03749435681)
 
