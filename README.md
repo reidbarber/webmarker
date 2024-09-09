@@ -100,7 +100,7 @@ A custom attribute to add to the marked elements. This attribute contains the la
 
 A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
 
-- Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+- Type: `Partial<CSSStyleDeclaration> | (element: Element) => Partial<CSSStyleDeclaration>`
 - Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
 
 ### markPlacement
@@ -114,7 +114,7 @@ The placement of the mark relative to the element.
 
 A CSS style to apply to the bounding box element. You can also specify a function that returns a CSS style object. Bounding boxes are only shown if showBoundingBoxes is true.
 
-- Type: `Readonly<Partial<CSSStyleDeclaration>> or (element: Element) => Readonly<Partial<CSSStyleDeclaration>>`
+- Type: `Partial<CSSStyleDeclaration> | (element: Element) => Partial<CSSStyleDeclaration>`
 - Default: `{outline: "2px dashed red", backgroundColor: "transparent"}`
 
 ### showBoundingBoxes

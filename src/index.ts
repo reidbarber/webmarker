@@ -14,8 +14,8 @@ type Placement =
   | "left-start"
   | "left-end";
 
-type StyleFunction = (element: Element) => CSSStyleDeclaration;
-type StyleObject = Readonly<Partial<CSSStyleDeclaration>>;
+type StyleFunction = (element: Element) => Partial<CSSStyleDeclaration>;
+type StyleObject = Partial<CSSStyleDeclaration>;
 
 interface MarkOptions {
   /**
