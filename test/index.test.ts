@@ -4,11 +4,14 @@ import { describe, expect, test, beforeEach, afterEach } from "@jest/globals";
 describe("WebMarker", () => {
   beforeEach(() => {
     document.body.innerHTML = `
-    <button>Button 1</button>
-    <button>Button 2</button>
-    <input type="text" placeholder="Input field" />
-    <a href="#">Link</a>
-  `;
+      <div id="container">
+        <button>Button 1</button>
+        <button>Button 2</button>
+        <input type="text" placeholder="Input field" />
+        <a href="#">Link</a>
+        <div>Non-interactive element</div>
+      </div>
+    `;
   });
 
   afterEach(() => {
@@ -82,5 +85,99 @@ describe("WebMarker", () => {
 
     const elements = document.querySelectorAll("[data-testid]");
     expect(elements.length).toBe(4);
+  });
+
+  test("uses custom selector", async () => {
+    const elements = await mark({ selector: "button" });
+    expect(Object.keys(elements).length).toBe(2);
+    expect(document.querySelectorAll(".webmarker").length).toBe(2);
+  });
+
+  test("uses custom getLabel function", async () => {
+    const elements = await mark({
+      getLabel: (element) => element.tagName.toLowerCase(),
+    });
+    expect(elements["button"].element.tagName).toBe("BUTTON");
+    expect(elements["input"].element.tagName).toBe("INPUT");
+    expect(elements["a"].element.tagName).toBe("A");
+  });
+
+  test("applies correct markPlacement", async () => {
+    await mark({ markPlacement: "bottom-end" });
+    const firstMark = document.querySelector(".webmarker") as HTMLElement;
+    const firstElement = document.querySelector("button") as HTMLElement;
+    const elementRect = firstElement.getBoundingClientRect();
+    const markRect = firstMark.getBoundingClientRect();
+
+    expect(markRect.bottom).toBeGreaterThanOrEqual(elementRect.bottom);
+    expect(markRect.right).toBeGreaterThanOrEqual(elementRect.right);
+  });
+
+  test("marks only viewport elements when viewPortOnly is true", async () => {
+    // Mock viewport
+    Object.defineProperty(HTMLElement.prototype, "getBoundingClientRect", {
+      configurable: true,
+      value: function () {
+        return {
+          top: this === document.querySelectorAll("button")[1] ? 1000 : 0,
+          bottom: 100,
+          left: 0,
+          right: 100,
+        };
+      },
+    });
+
+    const elements = await mark({ viewPortOnly: true });
+    expect(Object.keys(elements).length).toBe(3); // Second button should be excluded
+  });
+
+  test("uses custom containerElement", async () => {
+    const container = document.getElementById("container") as HTMLElement;
+    const elements = await mark({ containerElement: container });
+    expect(Object.keys(elements).length).toBe(4);
+  });
+
+  test("applies function-based styles", async () => {
+    await mark({
+      markStyle: (element) => ({
+        backgroundColor: element.tagName === "BUTTON" ? "green" : "blue",
+      }),
+      boundingBoxStyle: (element) => ({
+        outline:
+          element.tagName === "INPUT" ? "3px solid purple" : "2px dashed red",
+      }),
+    });
+
+    const buttonMark = document.querySelectorAll(
+      ".webmarker"
+    )[0] as HTMLElement;
+    const inputBoundingBox = document.querySelectorAll(
+      ".webmarker-bounding-box"
+    )[2] as HTMLElement;
+
+    expect(buttonMark.style.backgroundColor).toBe("green");
+    expect(inputBoundingBox.style.outline).toBe("3px solid purple");
+  });
+
+  test("doesn't show bounding boxes when showBoundingBoxes is false", async () => {
+    await mark({ showBoundingBoxes: false });
+    expect(document.querySelectorAll(".webmarker-bounding-box").length).toBe(0);
+  });
+
+  test("handles pages with no interactive elements", async () => {
+    document.body.innerHTML = "<div>No interactive elements</div>";
+    const elements = await mark();
+    expect(Object.keys(elements).length).toBe(0);
+  });
+
+  test("can mark and unmark multiple times", async () => {
+    await mark();
+    expect(isMarked()).toBe(true);
+    unmark();
+    expect(isMarked()).toBe(false);
+    await mark();
+    expect(isMarked()).toBe(true);
+    unmark();
+    expect(isMarked()).toBe(false);
   });
 });
