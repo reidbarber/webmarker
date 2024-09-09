@@ -89,6 +89,13 @@ A custom CSS selector to specify which elements to mark.
 - Type: `string`
 - Default: `"button, input, a, select, textarea"`
 
+### getLabel
+
+Provide a function for generating labels. By default, labels are generated as integers starting from 0.
+
+- Type: `(element: Element, index: number) => string`
+- Default: `(_, index) => index.toString()`
+
 ### markAttribute
 
 A custom attribute to add to the marked elements. This attribute contains the label of the mark.
@@ -96,19 +103,19 @@ A custom attribute to add to the marked elements. This attribute contains the la
 - Type: `string`
 - Default: `"data-mark-label"`
 
-### markStyle
-
-A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
-
-- Type: `Partial<CSSStyleDeclaration> | (element: Element) => Partial<CSSStyleDeclaration>`
-- Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
-
 ### markPlacement
 
 The placement of the mark relative to the element.
 
 - Type: `'top' | 'top-start' | 'top-end' | 'right' | 'right-start' | 'right-end' | 'bottom' | 'bottom-start' | 'bottom-end' | 'left' | 'left-start' | 'left-end'`
 - Default: `'top-start'`
+
+### markStyle
+
+A CSS style to apply to the label element. You can also specify a function that returns a CSS style object.
+
+- Type: `Partial<CSSStyleDeclaration> | (element: Element) => Partial<CSSStyleDeclaration>`
+- Default: `{backgroundColor: "red", color: "white", padding: "2px 4px", fontSize: "12px", fontWeight: "bold"}`
 
 ### boundingBoxStyle
 
@@ -123,13 +130,6 @@ Whether or not to show bounding boxes around the elements.
 
 - Type: `boolean`
 - Default: `true`
-
-### getLabel
-
-Provide a function for generating labels. By default, labels are generated as integers starting from 0.
-
-- Type: `(element: Element, index: number) => string`
-- Default: `(_, index) => index.toString()`
 
 ### containerElement
 
