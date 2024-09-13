@@ -41,7 +41,7 @@ You can use this information to build your prompt for the large language model.
 Example prompt:
 
 ```javascript
-let markedElements = await mark();
+let markedElements = mark();
 
 let prompt = `The following is a screenshot of a web page.
 
@@ -114,7 +114,7 @@ await page.evaluate(async () => await WebMarker.unmark());
 Marks the page and returns the marked elements.
 
 ```typescript
-const markedElements = await mark();
+const markedElements = mark();
 
 // markedElements["0"].element returns the first marked element
 // markedElements["0"].markElement returns the label element for the first marked element
@@ -191,7 +191,7 @@ Only mark elements that are visible in the current viewport.
 #### Advanced example
 
 ```typescript
-const markedElements = await mark({
+const markedElements = mark({
   // Only mark buttons and inputs
   selector: "button, input",
   // Use test id attribute for marker labels
@@ -228,5 +228,5 @@ const isMarked = await isMarked();
 Unmark the page.
 
 ```typescript
-await unmark();
+unmark();
 ```

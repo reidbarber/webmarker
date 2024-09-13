@@ -26,6 +26,7 @@
     "@mdx-js/react": "^3.0.1",
     "@next/mdx": "^14.2.3",
     "@playwright/test": "^1.46.1",
+    "@types/jest": "^29.5.13",
     "@types/mdx": "^2.0.13",
     "@types/node": "^22.5.1",
     "autoprefixer": "^10.4.19",
