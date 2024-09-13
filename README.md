@@ -32,7 +32,7 @@ You can use this information to build your prompt for the vision-language model.
 Example prompt:
 
 ```javascript
-let markedElements = await mark();
+let markedElements = mark();
 
 let prompt = `The following is a screenshot of a web page.
 
@@ -148,7 +148,7 @@ Only mark elements that are visible in the current viewport.
 ### Advanced example
 
 ```typescript
-const markedElements = await mark({
+const markedElements = mark({
   // Only mark buttons and inputs
   selector: "button, input",
   // Use test id attribute for marker labels

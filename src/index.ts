@@ -14,7 +14,10 @@ type Placement =
   | "left-start"
   | "left-end";
 
-type StyleFunction = (element: Element) => Partial<CSSStyleDeclaration>;
+type StyleFunction = (
+  element: Element,
+  index: number
+) => Partial<CSSStyleDeclaration>;
 type StyleObject = Partial<CSSStyleDeclaration>;
 
 interface MarkOptions {
@@ -67,6 +70,14 @@ interface MarkOptions {
    * @default false
    */
   viewPortOnly?: boolean;
+  /**
+   * Additional class to apply to the mark elements.
+   */
+  markClass?: string;
+  /**
+   * Additional class to apply to the bounding box elements.
+   */
+  boundingBoxClass?: string;
 }
 
 interface MarkedElement {
@@ -77,68 +88,94 @@ interface MarkedElement {
 
 let cleanupFns: (() => void)[] = [];
 
-async function mark(
-  options: MarkOptions = {}
-): Promise<Record<string, MarkedElement>> {
-  const {
-    selector = "button, input, a, select, textarea",
-    getLabel = (_, index) => index.toString(),
-    markAttribute = "data-mark-label",
-    markPlacement = "top-start",
-    markStyle = {
-      backgroundColor: "red",
-      color: "white",
-      padding: "2px 4px",
-      fontSize: "12px",
-      fontWeight: "bold",
-    },
-    boundingBoxStyle = {
-      outline: "2px dashed red",
-      backgroundColor: "transparent",
-    },
-    showBoundingBoxes = true,
-    containerElement = document.body,
-    viewPortOnly = false,
-  } = options;
+function mark(options: MarkOptions = {}): Record<string, MarkedElement> {
+  try {
+    const {
+      selector = "button, input, a, select, textarea",
+      getLabel = (_, index) => index.toString(),
+      markAttribute = "data-mark-label",
+      markPlacement = "top-start",
+      markStyle = {
+        backgroundColor: "red",
+        color: "white",
+        padding: "2px 4px",
+        fontSize: "12px",
+        fontWeight: "bold",
+      },
+      boundingBoxStyle = {
+        outline: "2px dashed red",
+        backgroundColor: "transparent",
+      },
+      showBoundingBoxes = true,
+      containerElement = document.body,
+      viewPortOnly = false,
+      markClass = "",
+      boundingBoxClass = "",
+    } = options;
 
-  const elements = Array.from(
-    containerElement.querySelectorAll(selector)
-  ).filter(
-    (el) => !viewPortOnly || el.getBoundingClientRect().top < window.innerHeight
-  );
+    const isInViewport = (el: Element) => {
+      const rect = el.getBoundingClientRect();
+      return rect.top < window.innerHeight && rect.bottom >= 0;
+    };
 
-  const markedElements: Record<string, MarkedElement> = {};
+    const elements = Array.from(
+      containerElement.querySelectorAll(selector)
+    ).filter((el) => !viewPortOnly || isInViewport(el));
 
-  await Promise.all(
-    elements.map(async (element, index) => {
+    const markedElements: Record<string, MarkedElement> = {};
+    const fragment = document.createDocumentFragment();
+
+    elements.forEach((element, index) => {
       const label = getLabel(element, index);
-      const markElement = createMark(element, markStyle, label, markPlacement);
+      const markElement = createMark(
+        element,
+        index,
+        markStyle,
+        label,
+        markPlacement,
+        markClass
+      );
+      fragment.appendChild(markElement);
 
       const boundingBoxElement = showBoundingBoxes
-        ? createBoundingBox(element, boundingBoxStyle, label)
+        ? createBoundingBox(element, boundingBoxStyle, label, boundingBoxClass)
         : undefined;
+      if (boundingBoxElement) {
+        fragment.appendChild(boundingBoxElement);
+      }
 
       markedElements[label] = { element, markElement, boundingBoxElement };
       element.setAttribute(markAttribute, label);
-    })
-  );
+    });
 
-  document.documentElement.setAttribute("data-marked", "true");
-  return markedElements;
+    document.body.appendChild(fragment);
+    document.documentElement.setAttribute("data-marked", "true");
+    return markedElements;
+  } catch (error) {
+    console.error("Error in mark function:", error);
+    throw error;
+  }
 }
 
 function createMark(
   element: Element,
+  index: number,
   style: StyleObject | StyleFunction,
   label: string,
-  markPlacement: Placement = "top-start"
+  markPlacement: Placement = "top-start",
+  markClass: string
 ): HTMLElement {
   const markElement = document.createElement("div");
-  markElement.className = "webmarker";
+  markElement.className = `webmarker ${markClass}`.trim();
   markElement.id = `webmarker-${label}`;
   markElement.textContent = label;
-  document.body.appendChild(markElement);
-  positionMark(markElement, element, markPlacement);
+  markElement.setAttribute("aria-hidden", "true");
+  positionElement(markElement, element, markPlacement, (x, y) => {
+    Object.assign(markElement.style, {
+      left: `${x}px`,
+      top: `${y}px`,
+    });
+  });
   applyStyle(
     markElement,
     {
@@ -146,7 +183,7 @@ function createMark(
       position: "absolute",
       pointerEvents: "none",
     },
-    typeof style === "function" ? style(element) : style
+    typeof style === "function" ? style(element, index) : style
   );
   return markElement;
 }
@@ -154,13 +191,23 @@ function createMark(
 function createBoundingBox(
   element: Element,
   style: StyleObject | StyleFunction,
-  label: string
+  label: string,
+  boundingBoxClass: string
 ): HTMLElement {
   const boundingBoxElement = document.createElement("div");
-  boundingBoxElement.className = "webmarker-bounding-box";
+  boundingBoxElement.className =
+    `webmarker-bounding-box ${boundingBoxClass}`.trim();
   boundingBoxElement.id = `webmarker-bounding-box-${label}`;
-  document.body.appendChild(boundingBoxElement);
-  positionBoundingBox(boundingBoxElement, element);
+  boundingBoxElement.setAttribute("aria-hidden", "true");
+  positionElement(boundingBoxElement, element, "top-start", (x, y) => {
+    const { width, height } = element.getBoundingClientRect();
+    Object.assign(boundingBoxElement.style, {
+      left: `${x}px`,
+      top: `${y}px`,
+      width: `${width}px`,
+      height: `${height}px`,
+    });
+  });
   applyStyle(
     boundingBoxElement,
     {
@@ -168,43 +215,23 @@ function createBoundingBox(
       position: "absolute",
       pointerEvents: "none",
     },
-    typeof style === "function" ? style(element) : style
+    typeof style === "function" ? style(element, parseInt(label)) : style
   );
   return boundingBoxElement;
 }
 
-function positionMark(
-  markElement: HTMLElement,
-  element: Element,
-  markPlacement: Placement
+function positionElement(
+  target: HTMLElement,
+  anchor: Element,
+  placement: Placement,
+  updateCallback: (x: number, y: number) => void
 ) {
-  async function updatePosition() {
-    const { x, y } = await computePosition(element, markElement, {
-      placement: markPlacement,
-    });
-    Object.assign(markElement.style, {
-      left: `${x}px`,
-      top: `${y}px`,
+  function updatePosition() {
+    computePosition(anchor, target, { placement }).then(({ x, y }) => {
+      updateCallback(x, y);
     });
   }
-
-  cleanupFns.push(autoUpdate(element, markElement, updatePosition));
-}
-
-async function positionBoundingBox(boundingBox: HTMLElement, element: Element) {
-  const { width, height } = element.getBoundingClientRect();
-  async function updatePosition() {
-    const { x, y } = await computePosition(element, boundingBox, {
-      placement: "top-start",
-    });
-    Object.assign(boundingBox.style, {
-      left: `${x}px`,
-      top: `${y + height}px`,
-      width: `${width}px`,
-      height: `${height}px`,
-    });
-  }
-  cleanupFns.push(autoUpdate(element, boundingBox, updatePosition));
+  cleanupFns.push(autoUpdate(anchor, target, updatePosition));
 }
 
 function applyStyle(
@@ -216,6 +243,15 @@ function applyStyle(
 }
 
 function unmark(): void {
+  const markAttribute = document
+    .querySelector("[data-mark-label]")
+    ?.getAttribute("data-mark-label")
+    ? "data-mark-label"
+    : "data-webmarker-label";
+
+  document.querySelectorAll(`[${markAttribute}]`).forEach((el) => {
+    el.removeAttribute(markAttribute);
+  });
   document
     .querySelectorAll(".webmarker, .webmarker-bounding-box")
     .forEach((el) => el.remove());
