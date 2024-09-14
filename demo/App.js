@@ -9,7 +9,7 @@ export function App() {
   useEffect(() => {
     if (!isMarked) {
       let elements = mark();
-      elements.then((res) => setMarkedElements(res));
+      setMarkedElements(elements);
       setMarked(true);
     }
   }, []);
@@ -21,7 +21,7 @@ export function App() {
       setMarkedElements(null);
     } else {
       let elements = mark({});
-      elements.then((res) => setMarkedElements(res));
+      setMarkedElements(elements);
       setMarked(true);
     }
   };
