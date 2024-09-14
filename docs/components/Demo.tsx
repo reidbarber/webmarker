@@ -13,7 +13,7 @@ export function Demo() {
       setMarkedElements({});
     } else {
       let elements = mark({});
-      elements.then((res) => setMarkedElements(res));
+      setMarkedElements(elements);
     }
   };
 

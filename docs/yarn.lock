@@ -6927,10 +6927,10 @@ webidl-conversions@^7.0.0:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-7.0.0.tgz#256b4e1882be7debbf01d05f0aa2039778ea080a"
   integrity sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==
 
-webmarker-js@^0.0.6:
-  version "0.0.6"
-  resolved "https://registry.yarnpkg.com/webmarker-js/-/webmarker-js-0.0.6.tgz#94ee468bb5f2941d4730d210c408fe11094a027c"
-  integrity sha512-W8KzVthmJBirr9zlo5mm53gxXihjxsLIS3A3cDYrHMksGJ10D3KDl9ATY5hA8giKR4mcsk5Ws+mm9GfcDIuycQ==
+webmarker-js@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/webmarker-js/-/webmarker-js-0.5.0.tgz#b383e329b911597e14ffe55e3cab1d941a5a8842"
+  integrity sha512-SdkwnHBJ/2YruePpUttrhUKv7QHLK8QXAaeerc8RwfqxPe6ijCy9mWAGGeT3NB35nrbLtUCFwbnXiejgUUJBSw==
   dependencies:
     "@floating-ui/dom" "^1.6.5"
 
