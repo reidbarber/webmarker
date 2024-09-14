@@ -1,6 +1,6 @@
 "use client";
 
-import { unmark, mark } from "../../dist/module";
+import { unmark, mark } from "webmarker-js";
 import { useEffect, useState } from "react";
 
 export function Demo() {
