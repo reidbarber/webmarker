@@ -203,7 +203,7 @@ function createBoundingBox(
     const { width, height } = element.getBoundingClientRect();
     Object.assign(boundingBoxElement.style, {
       left: `${x}px`,
-      top: `${y}px`,
+      top: `${y + height}px`,
       width: `${width}px`,
       height: `${height}px`,
     });
