@@ -1,6 +1,6 @@
 "use client";
 
-import { unmark, mark } from "webmarker-js";
+import { unmark, mark } from "../../dist/module";
 import { useEffect, useState } from "react";
 
 export function Demo() {
@@ -13,7 +13,7 @@ export function Demo() {
       setMarkedElements({});
     } else {
       let elements = mark({});
-      elements.then((res) => setMarkedElements(res));
+      setMarkedElements(elements);
     }
   };
 
