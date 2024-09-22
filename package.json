@@ -14,7 +14,7 @@
     "docs:dev": "cd docs && next",
     "docs:build": "cd docs && next build",
     "docs:start": "cd docs && next start",
-    "test:playwright": "cd test/playwright && npx playwright test"
+    "test:playwright": "npx playwright test"
   },
   "author": "Reid Barber",
   "license": "MIT",

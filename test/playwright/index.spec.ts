@@ -2,9 +2,9 @@ import { test, expect } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 
-test("Mark Wikipedia homepage", async ({ page }) => {
-  // Navigate to Wikipedia
-  await page.goto("https://en.wikipedia.org/wiki/Main_Page");
+test("Demo app visual regression test", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveScreenshot();
 
   // Load the WebMarker library
   const webmarkerJs = fs.readFileSync(
@@ -16,20 +16,19 @@ test("Mark Wikipedia homepage", async ({ page }) => {
   await page.evaluate(webmarkerJs);
 
   // Mark the page
-  const marks = await page.evaluate(async () => {
+  await page.evaluate(() => {
     // Use the global WebMarker object
     // @ts-ignore
-    return await WebMarker.mark();
+    return WebMarker.mark();
   });
 
-  expect(Object.keys(marks).length).toBeGreaterThan(0);
+  await expect(page).toHaveScreenshot();
 
-  // Take a screenshot
-  await page.screenshot({ path: "wikipedia-marked.png", fullPage: true });
+  await page.evaluate(() => {
+    // Use the global WebMarker object
+    // @ts-ignore
+    return WebMarker.unmark();
+  });
 
-  // Verify that marks have been added
-  const markCount = await page.evaluate(
-    () => document.querySelectorAll(".webmarker").length
-  );
-  expect(markCount).toBeGreaterThan(0);
+  await expect(page).toHaveScreenshot();
 });
