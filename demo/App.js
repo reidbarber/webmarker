@@ -1,18 +1,10 @@
 import { unmark, mark } from "../src";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 
 export function App() {
   let [isMarked, setMarked] = useState(false);
   let [markedElements, setMarkedElements] = useState(null);
   let demoRef = useRef(null);
-
-  useEffect(() => {
-    if (!isMarked) {
-      let elements = mark();
-      setMarkedElements(elements);
-      setMarked(true);
-    }
-  }, []);
 
   let toggleMark = () => {
     if (isMarked) {
