@@ -91,7 +91,7 @@ let cleanupFns: (() => void)[] = [];
 function mark(options: MarkOptions = {}): Record<string, MarkedElement> {
   try {
     const {
-      selector = "button, input, a, select, textarea",
+      selector = 'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])',
       getLabel = (_, index) => index.toString(),
       markAttribute = "data-mark-label",
       markPlacement = "top-start",
