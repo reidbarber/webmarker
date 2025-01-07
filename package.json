@@ -1,6 +1,6 @@
 {
   "name": "webmarker-js",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "A library for marking web pages for Set-of-Mark prompting with vision-language models.",
   "source": "src/index.ts",
   "main": "dist/main.js",
