@@ -130,7 +130,7 @@ Optionally accepts an options object support the properties below.
 A custom CSS selector to specify which elements to mark.
 
 - Type: `string`
-- Default: `"button, input, a, select, textarea"`
+- Default: `'a[href], button, input:not([type="hidden"]), select, textarea, summary, [role="button"], [tabindex]:not([tabindex="-1"])'`
 
 ##### getLabel
 
