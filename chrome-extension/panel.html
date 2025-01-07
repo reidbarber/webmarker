@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 10px;
+      }
+      .option-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input[type="text"],
+      textarea {
+        width: 100%;
+        padding: 5px;
+      }
+      button {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+      #output {
+        white-space: pre-wrap;
+        background-color: #f9f9f9;
+        padding: 10px;
+        margin-top: 15px;
+        border: 1px solid #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="option-group">
+      <label><input type="checkbox" id="markPage" /> Mark Page</label>
+      <button id="refresh">Refresh Markings</button>
+    </div>
+
+    <div class="option-group">
+      <label for="selector">Selector</label>
+      <input
+        type="text"
+        id="selector"
+        value="button, input, a, select, textarea"
+      />
+    </div>
+
+    <div class="option-group">
+      <label for="markPlacement">Mark Placement</label>
+      <select id="markPlacement">
+        <option value="top-start">top-start</option>
+        <option value="top">top</option>
+        <option value="top-end">top-end</option>
+        <option value="right-start">right-start</option>
+        <option value="right">right</option>
+        <option value="right-end">right-end</option>
+        <option value="bottom-start">bottom-start</option>
+        <option value="bottom">bottom</option>
+        <option value="bottom-end">bottom-end</option>
+        <option value="left-start">left-start</option>
+        <option value="left">left</option>
+        <option value="left-end">left-end</option>
+      </select>
+    </div>
+
+    <div class="option-group">
+      <label
+        ><input type="checkbox" id="showBoundingBoxes" checked /> Show Bounding
+        Boxes</label
+      >
+    </div>
+
+    <div class="option-group">
+      <label><input type="checkbox" id="viewPortOnly" /> Viewport Only</label>
+    </div>
+
+    <div class="option-group">
+      <button id="copyOptions">Copy Options Object</button>
+    </div>
+
+    <div id="output"></div>
+
+    <script src="panel.js"></script>
+  </body>
+</html>
