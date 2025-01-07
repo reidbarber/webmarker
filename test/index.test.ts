@@ -18,10 +18,10 @@ describe("WebMarker", () => {
     unmark();
   });
 
-  test("marks all interactive elements", async () => {
+  test("marks all interactive elements", () => {
     const elements = mark();
-    let marks = document.querySelectorAll(".webmarker");
-    let boundingBoxes = document.querySelectorAll(".webmarker-bounding-box");
+    const marks = document.querySelectorAll(".webmarker");
+    const boundingBoxes = document.querySelectorAll(".webmarker-bounding-box");
 
     expect(marks.length).toBe(4);
     expect(boundingBoxes.length).toBe(4);
@@ -30,7 +30,7 @@ describe("WebMarker", () => {
 
     // Check that data-mark-label gets added
     Object.entries(elements).forEach(([label, { element }]) => {
-      expect(element.attributes["data-mark-label"].value).toBe(label);
+      expect(element.getAttribute("data-mark-label")).toBe(label);
     });
 
     // Check that mark elements are added correctly
@@ -40,7 +40,7 @@ describe("WebMarker", () => {
     });
   });
 
-  test("assigns correct labels to elements", async () => {
+  test("assigns correct labels to elements", () => {
     const options: MarkOptions = {
       getLabel: (_, index) => `Label ${index}`,
     };
@@ -52,7 +52,7 @@ describe("WebMarker", () => {
     expect(elements["Label 3"].element.tagName).toBe("A");
   });
 
-  test("removes marks with unmark()", async () => {
+  test("removes marks with unmark()", () => {
     mark();
     expect(isMarked()).toBe(true);
     unmark();
@@ -61,7 +61,7 @@ describe("WebMarker", () => {
     expect(isMarked()).toBe(false);
   });
 
-  test("applies custom styles to marks and boundingBoxes", async () => {
+  test("applies custom styles to marks and boundingBoxes", () => {
     mark({
       markStyle: { backgroundColor: "blue", color: "red" },
       boundingBoxStyle: { outline: "3px solid green" },
@@ -78,7 +78,7 @@ describe("WebMarker", () => {
     expect(boundingBoxElement.style.outline).toBe("3px solid green");
   });
 
-  test("supports custom attribute", async () => {
+  test("supports custom attribute", () => {
     mark({
       markAttribute: "data-testid",
     });
@@ -87,13 +87,13 @@ describe("WebMarker", () => {
     expect(elements.length).toBe(4);
   });
 
-  test("uses custom selector", async () => {
+  test("uses custom selector", () => {
     const elements = mark({ selector: "button" });
     expect(Object.keys(elements).length).toBe(2);
     expect(document.querySelectorAll(".webmarker").length).toBe(2);
   });
 
-  test("uses custom getLabel function", async () => {
+  test("uses custom getLabel function", () => {
     const elements = mark({
       getLabel: (element) => element.tagName.toLowerCase(),
     });
@@ -102,7 +102,7 @@ describe("WebMarker", () => {
     expect(elements["a"].element.tagName).toBe("A");
   });
 
-  test("applies correct markPlacement", async () => {
+  test("applies correct markPlacement", () => {
     mark({ markPlacement: "bottom-end" });
     const firstMark = document.querySelector(".webmarker") as HTMLElement;
     const firstElement = document.querySelector("button") as HTMLElement;
@@ -113,7 +113,7 @@ describe("WebMarker", () => {
     expect(markRect.right).toBeGreaterThanOrEqual(elementRect.right);
   });
 
-  test("marks only viewport elements when viewPortOnly is true", async () => {
+  test("marks only viewport elements when viewPortOnly is true", () => {
     // Mock viewport
     Object.defineProperty(HTMLElement.prototype, "getBoundingClientRect", {
       configurable: true,
@@ -129,15 +129,18 @@ describe("WebMarker", () => {
 
     const elements = mark({ viewPortOnly: true });
     expect(Object.keys(elements).length).toBe(3); // Second button should be excluded
+
+    // Restore original getBoundingClientRect
+    delete (HTMLElement.prototype as any).getBoundingClientRect;
   });
 
-  test("uses custom containerElement", async () => {
+  test("uses custom containerElement", () => {
     const container = document.getElementById("container") as HTMLElement;
     const elements = mark({ containerElement: container });
     expect(Object.keys(elements).length).toBe(4);
   });
 
-  test("applies function-based styles", async () => {
+  test("applies function-based styles", () => {
     mark({
       markStyle: (element) => ({
         backgroundColor: element.tagName === "BUTTON" ? "green" : "blue",
@@ -148,29 +151,29 @@ describe("WebMarker", () => {
       }),
     });
 
-    const buttonMark = document.querySelectorAll(
+    const markElements = document.querySelectorAll(
       ".webmarker"
-    )[0] as HTMLElement;
+    ) as NodeListOf<HTMLElement>;
     const inputBoundingBox = document.querySelectorAll(
       ".webmarker-bounding-box"
     )[2] as HTMLElement;
 
-    expect(buttonMark.style.backgroundColor).toBe("green");
+    expect(markElements[0].style.backgroundColor).toBe("green");
     expect(inputBoundingBox.style.outline).toBe("3px solid purple");
   });
 
-  test("doesn't show bounding boxes when showBoundingBoxes is false", async () => {
+  test("doesn't show bounding boxes when showBoundingBoxes is false", () => {
     mark({ showBoundingBoxes: false });
     expect(document.querySelectorAll(".webmarker-bounding-box").length).toBe(0);
   });
 
-  test("handles pages with no interactive elements", async () => {
+  test("handles pages with no interactive elements", () => {
     document.body.innerHTML = "<div>No interactive elements</div>";
     const elements = mark();
     expect(Object.keys(elements).length).toBe(0);
   });
 
-  test("can mark and unmark multiple times", async () => {
+  test("can mark and unmark multiple times", () => {
     mark();
     expect(isMarked()).toBe(true);
     unmark();
@@ -209,7 +212,7 @@ describe("WebMarker", () => {
     const consoleSpy = jest
       .spyOn(console, "error")
       .mockImplementation(() => {});
-    expect(() => mark({ selector: "div::" })).toThrow(); // Invlaid selector
+    expect(() => mark({ selector: "div::" })).toThrow(); // Invalid selector
     expect(consoleSpy).toHaveBeenCalledWith(
       "Error in mark function:",
       expect.any(Error)
@@ -260,19 +263,19 @@ describe("WebMarker", () => {
 
     Element.prototype.getBoundingClientRect = function () {
       if (this.tagName === "BUTTON" && this.textContent === "Button 1") {
-        return { top: -10, bottom: 10 } as DOMRect; // First button partially visible
+        return { top: -10, bottom: 10, left: 0, right: 100 } as DOMRect; // Partially visible
       } else if (this.tagName === "BUTTON" && this.textContent === "Button 2") {
-        return { top: 20, bottom: 40 } as DOMRect; // Second button fully visible
+        return { top: 20, bottom: 40, left: 0, right: 100 } as DOMRect; // Fully visible
       } else if (this.tagName === "INPUT") {
-        return { top: 50, bottom: 70 } as DOMRect; // Input fully visible
+        return { top: 50, bottom: 70, left: 0, right: 100 } as DOMRect; // Fully visible
       } else if (this.tagName === "A") {
-        return { top: 110, bottom: 130 } as DOMRect; // Link not visible
+        return { top: 110, bottom: 130, left: 0, right: 100 } as DOMRect; // Not visible
       }
-      return { top: 0, bottom: 0 } as DOMRect;
+      return { top: 0, bottom: 0, left: 0, right: 0 } as DOMRect;
     };
 
     const elements = mark({ viewPortOnly: true });
-    expect(Object.keys(elements).length).toBe(3); // Two buttons and input should be marked
+    expect(Object.keys(elements).length).toBe(3); // Excludes second button
 
     // Restore original functions
     Element.prototype.getBoundingClientRect = originalGetBoundingClientRect;
@@ -292,5 +295,84 @@ describe("WebMarker", () => {
     ) as NodeListOf<HTMLElement>;
     expect(markElements[0].style.backgroundColor).toBe("red");
     expect(markElements[1].style.backgroundColor).toBe("blue");
+    expect(markElements[2].style.backgroundColor).toBe("red");
+    expect(markElements[3].style.backgroundColor).toBe("blue");
+  });
+
+  test("marks a robust set of default interactive elements", () => {
+    document.body.innerHTML = `
+      <div role="button">Div with role="button"</div>
+      <a>Anchor without href</a>
+      <a href="#test">Anchor with href</a>
+      <input type="hidden" />
+      <input type="text" />
+      <summary>Summary element</summary>
+      <div tabindex="0">Div with tabindex=0</div>
+      <div tabindex="-1">Div with tabindex=-1 (not interactive)</div>
+    `;
+
+    const elements = mark();
+    const markCount = Object.keys(elements).length;
+    const webmarkers = document.querySelectorAll(".webmarker");
+
+    // We expect to mark:
+    // 1. <div role="button">          (yes)
+    // 2. <a href="#test">             (yes)
+    // 3. <input type="text">          (yes)
+    // 4. <summary>                    (yes)
+    // 5. <div tabindex="0">           (yes)
+    // => total 5
+
+    // Not marked:
+    // - <a> without href
+    // - <input type="hidden">
+    // - <div tabindex="-1">
+    expect(markCount).toBe(5);
+    expect(webmarkers.length).toBe(5);
+
+    expect(
+      Array.from(webmarkers).some(
+        (el) =>
+          el.textContent &&
+          elements[el.textContent]?.element.matches('[role="button"]')
+      )
+    ).toBe(true);
+
+    expect(
+      Array.from(webmarkers).some(
+        (el) =>
+          el.textContent &&
+          elements[el.textContent]?.element.matches('a[href="#test"]')
+      )
+    ).toBe(true);
+
+    expect(
+      Array.from(webmarkers).some(
+        (el) =>
+          el.textContent &&
+          elements[el.textContent]?.element.matches('input[type="text"]')
+      )
+    ).toBe(true);
+
+    expect(
+      Array.from(webmarkers).some(
+        (el) =>
+          el.textContent &&
+          elements[el.textContent]?.element.matches('summary')
+      )
+    ).toBe(true);
+
+    expect(
+      Array.from(webmarkers).some(
+        (el) =>
+          el.textContent &&
+          elements[el.textContent]?.element.matches('div[tabindex="0"]')
+      )
+    ).toBe(true);
+
+    expect(isMarked()).toBe(true);
+
+    unmark();
+    expect(isMarked()).toBe(false);
   });
 });
