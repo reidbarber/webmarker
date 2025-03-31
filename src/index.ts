@@ -138,7 +138,7 @@ function mark(options: MarkOptions = {}): Record<string, MarkedElement> {
       fragment.appendChild(markElement);
 
       const boundingBoxElement = showBoundingBoxes
-        ? createBoundingBox(element, boundingBoxStyle, label, boundingBoxClass)
+        ? createBoundingBox(element, index, boundingBoxStyle, label, boundingBoxClass)
         : undefined;
       if (boundingBoxElement) {
         fragment.appendChild(boundingBoxElement);
@@ -190,6 +190,7 @@ function createMark(
 
 function createBoundingBox(
   element: Element,
+  index: number,
   style: StyleObject | StyleFunction,
   label: string,
   boundingBoxClass: string
@@ -215,7 +216,7 @@ function createBoundingBox(
       position: "absolute",
       pointerEvents: "none",
     },
-    typeof style === "function" ? style(element, parseInt(label)) : style
+    typeof style === "function" ? style(element, index) : style
   );
   return boundingBoxElement;
 }

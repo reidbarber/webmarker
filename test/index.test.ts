@@ -375,4 +375,32 @@ describe("WebMarker", () => {
     unmark();
     expect(isMarked()).toBe(false);
   });
+
+  test("correctly passes index to boundingBoxStyle function with non-numeric labels", () => {
+    const options: MarkOptions = {
+      selector: "button",
+      getLabel: (element, index) => `btn-id-${index}`, // Non-numeric labels
+      boundingBoxStyle: (element, index) => {
+        const color = index % 2 === 0 ? "rgb(255, 0, 0)" : "rgb(0, 0, 255)"; // Red for even, Blue for odd
+        return {
+          outline: `2px solid ${color}`,
+        };
+      },
+      showBoundingBoxes: true,
+    };
+
+    mark(options);
+
+    const boundingBoxes = document.querySelectorAll(
+      ".webmarker-bounding-box"
+    ) as NodeListOf<HTMLElement>;
+
+    expect(boundingBoxes.length).toBe(2);
+
+    const style1 = window.getComputedStyle(boundingBoxes[0]);
+    expect(style1.outline).toBe("2px solid rgb(255, 0, 0)");
+
+    const style2 = window.getComputedStyle(boundingBoxes[1]);
+    expect(style2.outline).toBe("2px solid rgb(0, 0, 255)");
+  });
 });
