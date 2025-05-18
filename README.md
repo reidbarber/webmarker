@@ -171,3 +171,15 @@ const markedElements = mark({
   viewPortOnly: true,
 });
 ```
+
+## Citation
+
+```
+@software{barber_webmarker_2025,
+  author       = {Barber, Reid},
+  title        = {WebMarker: A library for marking web pages for Set-of-Mark prompting with vision-language models},
+  year         = {2025},
+  url          = {https://github.com/reidbarber/webmarker},
+  license      = {MIT},
+}
+```
