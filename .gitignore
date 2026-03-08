@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .next
+docs/out/
 /test-results/
 /playwright-report/
 /blob-report/

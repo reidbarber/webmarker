@@ -1,8 +1,9 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import Image from "next/image";
 import { useEffect, useState } from "react";
+
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
 
 export function Logo() {
   const { theme } = useTheme();
@@ -19,10 +20,10 @@ export function Logo() {
 
   const logoSrc =
     theme === "dark" || systemAndDark
-      ? "/webmarker-dark.png"
-      : "/webmarker-light.png";
+      ? `${basePath}/webmarker-dark.png`
+      : `${basePath}/webmarker-light.png`;
 
   return (
-    <Image priority src={logoSrc} alt="WebMarker" width={500} height={192} />
+    <img src={logoSrc} alt="WebMarker" width={500} height={192} />
   );
 }

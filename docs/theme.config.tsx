@@ -2,13 +2,19 @@ import React from "react";
 import { DocsThemeConfig } from "nextra-theme-docs";
 import { useRouter } from "next/router";
 
+const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
+function Head() {
+  return (
+    <>
+      <link rel="shortcut icon" href={`${basePath}/favicon.ico`} />
+    </>
+  );
+}
+
 const config: DocsThemeConfig = {
   logo: <span>WebMarker</span>,
-  head: (
-    <>
-      <link rel="shortcut icon" href="favicon.ico" />
-    </>
-  ),
+  head: <Head />,
   useNextSeoProps() {
     const { pathname } = useRouter();
     if (pathname !== "/") {
@@ -25,7 +31,7 @@ const config: DocsThemeConfig = {
   project: {
     link: "https://github.com/reidbarber/webmarker",
   },
-  docsRepositoryBase: "https://github.com/reidbarber/webmarker",
+  docsRepositoryBase: "https://github.com/reidbarber/webmarker/tree/main/docs",
   footer: {
     text: "Webmarker",
   },
