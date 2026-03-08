@@ -4,9 +4,9 @@
   "description": "Docs for WebMarker",
   "main": "next.config.js",
   "scripts": {
-    "dev": "next",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "python3 -m http.server 3000 --directory out"
   },
   "author": "Reid Barber",
   "license": "MIT",
