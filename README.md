@@ -11,7 +11,7 @@ Mark web pages for use with vision-language models.
 
 ## Overview
 
-**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models such as GPT-4o, Claude 3.5, and Google Gemini 1.5.
+**WebMarker** adds visual markings with labels to elements on a web page. This can be used for [Set-of-Mark](https://github.com/microsoft/SoM) prompting, which improves visual grounding abilities of vision-language models.
 
 ![Screenshot of marked Google homepage](https://github.com/user-attachments/assets/722e1034-06d4-4ccd-a7d6-f03749435681)
 
@@ -156,7 +156,10 @@ const markedElements = mark({
   // Use a blue mark with white text
   markStyle: { color: "white", backgroundColor: "blue", padding: 5 },
   // Use a blue dashed outline with a transparent and slighly blue background
-  boundingBoxStyle: { outline: "2px dashed blue", backgroundColor: "rgba(0, 0, 255, 0.1)"},
+  boundingBoxStyle: {
+    outline: "2px dashed blue",
+    backgroundColor: "rgba(0, 0, 255, 0.1)",
+  },
   // Place the mark at the top right corner of the element
   markPlacement: "top-end",
   // Show bounding boxes over elements (defaults to true)
